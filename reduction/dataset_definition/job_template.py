@@ -13,15 +13,14 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 # data source
 process.source = cms.Source("PoolSource",
-  fileNames = cms.untracked.vstring(
-$input_files
-  ),
-
+  fileNames = cms.untracked.vstring(),
   inputCommands = cms.untracked.vstring(
     'drop *',
     'keep CTPPSLocalTrackLites_*_*_*'
   )
 )
+
+$input_file_commands
 
 # apply JSON file
 import FWCore.PythonUtilities.LumiList as LumiList
