@@ -231,10 +231,28 @@ int main()
 			if (dest == NULL)
 				continue;
 
-			*dest = CTPPSLocalTrackLite(tr.getRPId(),
-					tr.getX() + cfg.alignment_corrections_x[rpDecId], tr.getXUnc(),
-					tr.getY(), tr.getYUnc()
-				);
+			double x = tr.getX();
+			double y = tr.getY();
+
+			// apply package-flip correction
+			if (!cfg.aligned && (rpDecId == 3 || rpDecId == 103))
+			{
+				constexpr double tau = 8. / 180. * M_PI;
+				constexpr double ed = cos(2.*tau);
+				constexpr double ead = sin(2.*tau);
+
+				const double x_o = x;
+				const double y_o = y;
+
+				x = ed * x_o + ead * y_o;
+				y = ead * x_o - ed * y_o;
+			}
+
+			// apply alignment corrections
+			x += cfg.alignment_corrections_x[rpDecId];
+
+			// re-build track object
+			*dest = CTPPSLocalTrackLite(tr.getRPId(), x, 0., y, 0.);
 		}
 
 		bool tr_L_2_F_valid = (tr_L_2_F.getRPId() != 0);
