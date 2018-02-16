@@ -262,7 +262,7 @@ unsigned int SectorData::Process(const vector<CTPPSLocalTrackLite> &tracks)
 			h_q_cut_h_bef->Fill(cq_h);
 			const bool cv_h = (fabs(cq_h) < cfg.n_si * scfg.cut_h_si);
 
-			const double cq_v = trDw.getX() + scfg.cut_v_a * trUp.getX() + scfg.cut_v_c;
+			const double cq_v = trDw.getY() + scfg.cut_v_a * trUp.getY() + scfg.cut_v_c;
 			h_q_cut_v_bef->Fill(cq_v);
 			const bool cv_v = (fabs(cq_v) < cfg.n_si * scfg.cut_v_si);
 
