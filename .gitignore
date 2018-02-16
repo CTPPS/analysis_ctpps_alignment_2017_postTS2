@@ -10,5 +10,7 @@
 .*
 !.gitignore
 
+xangle_*
+
 distributions
 match
