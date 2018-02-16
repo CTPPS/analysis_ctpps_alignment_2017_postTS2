@@ -41,10 +41,15 @@ do
 	# if not present, make (default) config
 	if [ ! -f "$dir/config.py" ]
 	then
-	   cat "config_template.py" | sed "\
-	   		s|\$fill|$fill|;\
-	   		s|\$xangle|$xangle|;\
-	   		s|\$dataset|$stream|;\
-	   	" > "$dir/config.py"
+		cat "config_template.py" | sed "\
+				s|\$fill|$fill|;\
+				s|\$xangle|$xangle|;\
+				s|\$dataset|$stream|;\
+			" > "$dir/config.py"
+	fi
+
+	if [ ! -f "$dir/../../config_common.py" ]
+	then
+		cp "config_common_template.py" "$dir/../../config_common.py"
 	fi
 done
