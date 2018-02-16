@@ -8,4 +8,8 @@ sys.path.append(os.path.relpath("../../../../../"))
 from config_base import config
 from input_files import input_files
 
+config.fill = $fill
+config.xangle = $xangle
+config.dataset = "$dataset"
+
 config.input_files = input_files

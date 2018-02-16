@@ -36,6 +36,10 @@ struct SectorConfig
 
 struct Config
 {
+	unsigned int fill;
+	unsigned int xangle;
+	string dataset;
+
 	map<unsigned int, string> rp_tags;
 
 	vector<string> input_files;
@@ -70,6 +74,10 @@ int Config::LoadFrom(const string &f_in)
 	};
 
 	const edm::ParameterSet& config = edm::readPSetsFrom(f_in)->getParameter<edm::ParameterSet>("config");
+
+	fill = config.getParameter<unsigned int>("fill");
+	xangle = config.getParameter<unsigned int>("xangle");
+	dataset = config.getParameter<string>("dataset");
 
 	input_files = config.getParameter<vector<string>>("input_files");
 
@@ -137,6 +145,12 @@ void Config::Print(bool print_input_files) const
 		printf("\n");
 	}
 
+	printf("* general info\n");
+	printf("    fill = %u\n", fill);
+	printf("    xangle = %u\n", xangle);
+	printf("    dataset = %s\n", dataset.c_str());
+
+	printf("\n");
 	printf("* dataset already aligned\n");
 	printf("    aligned = %u\n", aligned);
 
