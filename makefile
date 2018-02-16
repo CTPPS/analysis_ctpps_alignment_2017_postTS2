@@ -2,7 +2,7 @@ all: distributions match
 
 distributions: distributions.cc config.h stat.h
 	g++ `root-config --libs` -lMinuit `root-config --cflags` \
-		--std=c++14 -Wall -Wextra -Wno-attributes\
+		-g -O3 --std=c++14 -Wall -Wextra -Wno-attributes\
 		-I$(CMSSW_RELEASE_BASE)/src \
 		-L$(CMSSW_RELEASE_BASE)/lib/slc6_amd64_gcc630 \
 		-lDataFormatsFWLite -lDataFormatsCommon -lDataFormatsCTPPSDetId -lFWCoreParameterSet -lFWCorePythonParameterSet \
@@ -10,7 +10,7 @@ distributions: distributions.cc config.h stat.h
 
 match: match.cc config.h stat.h alignment_classes.h
 	g++ `root-config --libs` -lMinuit `root-config --cflags` \
-		--std=c++14 -Wall -Wextra -Wno-attributes\
+		-g -O3 --std=c++14 -Wall -Wextra -Wno-attributes\
 		-I$(CMSSW_RELEASE_BASE)/src \
 		-L$(CMSSW_RELEASE_BASE)/lib/slc6_amd64_gcc630 \
 		-lDataFormatsFWLite -lDataFormatsCommon -lDataFormatsCTPPSDetId -lFWCoreParameterSet -lFWCorePythonParameterSet \
