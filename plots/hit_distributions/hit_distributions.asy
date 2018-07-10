@@ -3,24 +3,29 @@ import pad_layout;
 
 string topDir = "../../";
 
-string rp_tags[], rp_labels[];
-//rp_tags.push("L_2_F"); rp_labels.push("45-220-fr (pixel)");
-rp_tags.push("L_1_F"); rp_labels.push("45-210-fr (strip)");
-rp_tags.push("R_1_F"); rp_labels.push("56-210-fr (strip)");
-//rp_tags.push("R_2_F"); rp_labels.push("56-220-fr (pixel)");
+string rp_tags[], rp_labels[], rp_sectors[];
+//rp_tags.push("L_2_F"); rp_labels.push("45-220-fr (pixel)"); rp_sectors.push("sector 45");
+//rp_tags.push("L_1_F"); rp_labels.push("45-210-fr (strip)"); rp_sectors.push("sector 45");
+rp_tags.push("R_1_F"); rp_labels.push("56-210-fr (strip)"); rp_sectors.push("sector 56");
+rp_tags.push("R_2_F"); rp_labels.push("56-220-fr (pixel)"); rp_sectors.push("sector 56");
 
 string selection = "before selection";
 
 string datasets[] = {
 //	"data/alig/fill_5685/xangle_120/DS1",
-	"data/alig/fill_5912/xangle_120/DS1",
-	"data/alig_v5_test/fill_5912/xangle_120/DS1",
 
-//	"data/phys/fill_5848/xangle_120/SingleMuon",
-//	"data/phys/fill_5976/xangle_120/SingleMuon",
-//	"data/phys/fill_6161/xangle_120/SingleMuon",
-//	"data/phys/fill_6186/xangle_120/SingleMuon",
+//	"data/phys/fill_6348/xangle_150/SingleMuon",
+//	"data/phys/fill_6349/xangle_150/SingleMuon",
+//	"data/phys/fill_6355/xangle_150/SingleMuon",
+	"data/phys/fill_6356/xangle_150/SingleMuon",
 };
+
+/*
+TH2_x_min = 46;
+TH2_x_max = 65;
+TH2_y_min = -7;
+TH2_y_max = +7;
+*/
 
 //----------------------------------------------------------------------------------------------------
 
@@ -47,12 +52,17 @@ for (int dsi : datasets.keys)
 	{
 		bool pixel = (find(rp_labels[rpi], "pixel") >= 0);
 
-		NewPad("$x\ung{mm}$", "$y\ung{mm}$");
+		NewPad("$x\ung{mm}$", "$y\ung{mm}$", axesAbove=true);
 		scale(Linear, Linear, Log);
 
-		string suffix = (selection == "before selection") ? "_no_sel" : "_sel";
+		RootObject obj = RootGetObject(f, rp_sectors[rpi] + "/" + selection + "/" + rp_tags[rpi] + "/h2_y_vs_x");
+		obj.vExec("Rebin2D", 2, 2);
+		draw(obj);
 
-		draw(RootGetObject(f, selection + "/h2_y_vs_x_" + rp_tags[rpi] + suffix));
+		real x = 51.5;
+		draw((x, 7)--(x, +20), magenta, BeginArrow);
+		real x = 61.5;
+		draw((x, 7)--(x, +20), cyan, BeginArrow);
 
 		if (pixel)
 			limits((40, -20), (70, +20), Crop);

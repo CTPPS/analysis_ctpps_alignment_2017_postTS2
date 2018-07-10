@@ -47,7 +47,7 @@ for (int fi : fill_data.keys)
 {
 	int fill = fill_data[fi].fill;
 	
-	if (fill < 6343 || fill > 6371)
+	if (fill != 6348 && fill != )
 		continue;
 	
 	NewRow();
