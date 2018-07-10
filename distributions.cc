@@ -118,6 +118,8 @@ struct SectorData
 	SectorConfig scfg;
 
 	// hit distributions
+	map<unsigned int, TH1D*> m_h1_x_bef_sel;
+
 	map<unsigned int, TH2D*> m_h2_y_vs_x_bef_sel;
 
 	map<unsigned int, TH2D*> m_h2_y_vs_x_aft_sel;
@@ -158,15 +160,18 @@ SectorData::SectorData(const string _name, unsigned int _rpIdUp, unsigned int _r
 	const double x_min_pix = pixel_x_offset, x_max_pix = pixel_x_offset + n_bins_x * bin_size_x;
 	const double x_min_str = 0., x_max_str = n_bins_x * bin_size_x;
 
-	const unsigned int n_bins_y = 400;
+	const unsigned int n_bins_y = 200;
 	const double y_min = -20., y_max = +20.;
 
 	// hit distributions
-	m_h2_y_vs_x_bef_sel[rpIdUp] = new TH2D("", ";x;y", n_bins_x, x_min_pix, x_max_pix, n_bins_y, y_min, y_max);
-	m_h2_y_vs_x_bef_sel[rpIdDw] = new TH2D("", ";x;y", n_bins_x, x_min_str, x_max_str, n_bins_y, y_min, y_max);
+	m_h1_x_bef_sel[rpIdUp] = new TH1D("", ";x", 10*n_bins_x, x_min_pix, x_max_pix);
+	m_h1_x_bef_sel[rpIdDw] = new TH1D("", ";x", 10*n_bins_x, x_min_pix, x_max_pix);
 
-	m_h2_y_vs_x_aft_sel[rpIdUp] = new TH2D("", ";x;y", n_bins_x, x_min_pix, x_max_pix, n_bins_y, y_min, y_max);
-	m_h2_y_vs_x_aft_sel[rpIdDw] = new TH2D("", ";x;y", n_bins_x, x_min_str, x_max_str, n_bins_y, y_min, y_max);
+	m_h2_y_vs_x_bef_sel[rpIdUp] = new TH2D("", ";x;y", n_bins_x, x_min_str, x_max_str, n_bins_y, y_min, y_max);
+	m_h2_y_vs_x_bef_sel[rpIdDw] = new TH2D("", ";x;y", n_bins_x, x_min_pix, x_max_pix, n_bins_y, y_min, y_max);
+
+	m_h2_y_vs_x_aft_sel[rpIdUp] = new TH2D("", ";x;y", n_bins_x, x_min_str, x_max_str, n_bins_y, y_min, y_max);
+	m_h2_y_vs_x_aft_sel[rpIdDw] = new TH2D("", ";x;y", n_bins_x, x_min_pix, x_max_pix, n_bins_y, y_min, y_max);
 
 	m_g_y_vs_x_aft_sel[rpIdUp] = new TGraph();
 	m_g_y_vs_x_aft_sel[rpIdDw] = new TGraph();
@@ -182,7 +187,7 @@ SectorData::SectorData(const string _name, unsigned int _rpIdUp, unsigned int _r
 	h_q_cut_v_aft = new TH1D("", ";cq_v", 400, -2., 2.);
 	h2_cut_v_bef = new TH2D("", ";y_up;y_dw", n_bins_y, y_min, y_max, n_bins_y, y_min, y_max);
 	h2_cut_v_aft = new TH2D("", ";y_up;y_dw", n_bins_y, y_min, y_max, n_bins_y, y_min, y_max);
-	p_cut_v_aft = new TProfile("", ";y_up;mean of y_dw", n_bins_x, y_min, y_max);
+	p_cut_v_aft = new TProfile("", ";y_up;mean of y_dw", n_bins_y, y_min, y_max);
 
 	// profiles
 	m_p_y_vs_x_aft_sel[rpIdUp] = Profile(m_h2_y_vs_x_aft_sel[rpIdUp]);
@@ -236,16 +241,22 @@ unsigned int SectorData::Process(const vector<CTPPSLocalTrackLite> &tracks)
 
 	// update plots before selection
 	for (const auto &tr : tracksUp)
+	{
+		m_h1_x_bef_sel[rpIdUp]->Fill(tr.getX());
 		m_h2_y_vs_x_bef_sel[rpIdUp]->Fill(tr.getX(), tr.getY());
+	}
 
 	for (const auto &tr : tracksDw)
+	{
+		m_h1_x_bef_sel[rpIdDw]->Fill(tr.getX());
 		m_h2_y_vs_x_bef_sel[rpIdDw]->Fill(tr.getX(), tr.getY());
+	}
 
 	// skip crowded events
-	if (tracksUp.size() >= 3)
+	if (tracksUp.size() > 1)
 		return 0;
 
-	if (tracksDw.size() >= 3)
+	if (tracksDw.size() > 1)
 		return 0;
 
 	// do the selection
@@ -320,6 +331,10 @@ void SectorData::Write() const
 	for (const auto &p : m_h2_y_vs_x_bef_sel)
 	{
 		gDirectory = d_bef_sel->mkdir(cfg.rp_tags[p.first].c_str());
+
+		const auto it = m_h1_x_bef_sel.find(p.first);
+		it->second->Write("h_x");
+
 		p.second->Write("h2_y_vs_x");
 	}
 
@@ -376,7 +391,8 @@ int main()
 	}
 
 	// TODO
-	cfg.input_files.resize(1);
+	if (cfg.input_files.size() > 15)
+		cfg.input_files.resize(15);
 
 	printf("-------------------- config ----------------------\n");
 	cfg.Print(true);
