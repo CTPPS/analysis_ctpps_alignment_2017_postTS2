@@ -7,8 +7,11 @@ streams=(
 )
 
 dataset_exts=(
-	"Run2017E-17Nov2017-v1/MINIAOD"
-	"Run2017F-17Nov2017-v1/MINIAOD"
+	#"Run2017E-17Nov2017-v1/MINIAOD"
+	#"Run2017F-17Nov2017-v1/MINIAOD"
+
+	"Run2017E-17Nov2017-v1/AOD"
+	"Run2017F-17Nov2017-v1/AOD"
 )
 
 template_file="job_template.py"
@@ -26,28 +29,44 @@ success_file="success"
 
 function MakeInputFiles()
 {
-	#dir_out, stream
+#	# get run list
+#	runs=""
+#	for run in `cat "$dir_out/run_ls_selection.json" | grep -Po '".*?"' | sed 's/"//g'`
+#	do
+#		if [ -n "$runs" ]
+#		then
+#			runs="$runs,"
+#		fi
+#
+#		runs="$runs$run"
+#	done
+#
+#	# reset list of files
+#	rm -f "$dir_out/input_files"
+#
+#	# get list of files
+#	for ext in ${dataset_exts[*]}
+#	do
+#		echo "dasgoclient --query \"file dataset=/$stream/$ext run in [$runs]\" >> \"$dir_out/input_files\""
+#		dasgoclient --query "file dataset=/$stream/$ext run in [$runs]" >> "$dir_out/input_files"
+#	done
 
-	# get run list
-	runs=""
-	for run in `cat "$dir_out/run_ls_selection.json" | grep -Po '".*?"' | sed 's/"//g'`
-	do
-		if [ -n "$runs" ]
-		then
-			runs="$runs,"
-		fi
-
-		runs="$runs$run"
-	done
+	# TODO: currently, there is a problem in DAS which doesn't seem to account for the "run in [...]" statement
+	# a workaround below
 
 	# reset list of files
 	rm -f "$dir_out/input_files"
 
-	# get list of files
-	for ext in ${dataset_exts[*]}
+	runs=""
+	for run in `cat "$dir_out/run_ls_selection.json" | grep -Po '".*?"' | sed 's/"//g'`
 	do
-		dasgoclient --query "file dataset=/$stream/$ext run in [$runs]" >> "$dir_out/input_files"
+		for ext in ${dataset_exts[*]}
+		do
+			dasgoclient --query "file dataset=/$stream/$ext run=$run" >> "$dir_out/input_files"
+		done
 	done
+
+	# get list of files
 }
 
 #----------------------------------------------------------------------------------------------------
@@ -120,6 +139,8 @@ function MakeConfig()
 
 function MakeScript()
 {
+	#echo $input_file_commands
+
 	cat "$template_file" | sed -e "\
 			s|\$input_file_commands|$input_file_commands|;\
 			s|\$output_file|$output_file|;\
@@ -148,7 +169,7 @@ function ProcessOne()
 	execute_dir="`pwd -P`/$dir_out"
 	reco_dir="/pool"
 
-	storage_dir="/eos/totem/data/ctpps/reconstruction/2017/postTS2_alignment_data/version1"
+	storage_dir="/eos/totem/data/ctpps/reconstruction/2016/preTS2_alignment_data/version2"
 
 	output_file="$reco_dir/fill${fill}_xangle${xangle}_$stream.root"
 	output_tag="fill${fill}_xangle${xangle}_$stream"
@@ -163,11 +184,13 @@ function ProcessOne()
 	fi
 
 	# process input files
-	input_file_commands=""
-	for file in `cat "$dir_out/input_files"`
-	do
-        input_file_commands="${input_file_commands}process.source.fileNames.append(\"$file\")\n"
-	done
+	(
+		echo "def AddFiles(source):"
+		for file in `cat "$dir_out/input_files"|sort|uniq`
+		do
+			echo "  source.fileNames.append(\"$file\")"
+		done
+	) > "$dir_out/input_files.py"
 
 	# make config
 	MakeConfig
