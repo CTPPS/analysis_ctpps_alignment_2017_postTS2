@@ -42,7 +42,7 @@ function GetOne()
 #----------------------------------------------------------------------------------------------------
 
 top_dir="../data/alig"
-eos_dir="/eos/totem/data/ctpps/reconstruction/2017/alignment_run_September/version4"
+eos_dir="/eos/totem/data/ctpps/reconstruction/2017/alignment_run_September/version5"
 
 GetOne "6228" "150" "DS1" "run_303652"
 GetOne "6228" "130" "DS1" "run_303658"
