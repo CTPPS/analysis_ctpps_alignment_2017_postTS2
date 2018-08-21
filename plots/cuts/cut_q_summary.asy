@@ -1,6 +1,9 @@
 import root;
 import pad_layout;
+
 include "../fills_samples.asy";
+InitDataSets();
+//AddDataSet("fill_6371/xangle_130");
 
 string topDir = "../../";
 
@@ -13,9 +16,7 @@ real c_ranges[], c_Ticks[], c_ticks[];
 cuts.push("cut_h"); c_labels.push("cut h"); c_ranges.push(0.4); c_Ticks.push(0.10); c_ticks.push(0.05);
 cuts.push("cut_v"); c_labels.push("cut v"); c_ranges.push(0.2); c_Ticks.push(0.05); c_ticks.push(0.01);
 
-string dataset = "SingleMuon";
-
-InitDataSets();
+string dataset = "DoubleEG";
 
 xSizeDef = 8cm;
 
@@ -47,7 +48,7 @@ for (int fi : fill_data.keys)
 {
 	int fill = fill_data[fi].fill;
 	
-	if (fill != 6348 && fill != )
+	if (fill != 6371)
 		continue;
 	
 	NewRow();
@@ -79,7 +80,7 @@ for (int fi : fill_data.keys)
 
 				RootObject obj = RootGetObject(f, obj_path, error=false);
 				if (obj.valid)
-					draw(obj, "d0,vl", p);	
+					draw(obj, "d0,vl,N", p);	
 			}
 
 			xlimits(-r, r, Crop);
