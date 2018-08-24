@@ -33,7 +33,7 @@ config = cms.PSet(
 	  cut_v_apply = cms.bool(True),
 	  cut_v_a = cms.double(-1.07),
 	  cut_v_c = cms.double(1.63),
-	  cut_v_si = cms.double(0.15)
+	  cut_v_si = cms.double(0.15),
 
       nr_x_slice_min = cms.double(6.5),
       nr_x_slice_max = cms.double(19),
@@ -53,7 +53,7 @@ config = cms.PSet(
 	  cut_v_apply = cms.bool(True),
 	  cut_v_a = cms.double(-1.07),
 	  cut_v_c = cms.double(1.49),
-	  cut_v_si = cms.double(0.15)
+	  cut_v_si = cms.double(0.15),
 
       nr_x_slice_min = cms.double(5.5),
       nr_x_slice_max = cms.double(17.),
