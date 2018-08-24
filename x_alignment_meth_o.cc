@@ -40,18 +40,26 @@ TF1 *ff_pol2 = new TF1("ff_pol2", "[0] + [1]*x + [2]*x*x");
 
 //----------------------------------------------------------------------------------------------------
 
-void FitProfile(TProfile *p, double &sl, double &sl_unc)
+int FitProfile(TProfile *p, bool aligned, double &sl, double &sl_unc)
 {
+	if (p->GetEntries() < 100)
+		return 1;
+
+	double x_min = 1., x_max = 7.;
+	if (aligned) x_min = -3., x_max = +3.;
+
 	ff_pol1->SetParameter(0., 0.);
-	p->Fit(ff_pol1, "Q", "", 1., 7.);
+	p->Fit(ff_pol1, "Q", "", x_min, x_max);
 
 	sl = ff_pol1->GetParameter(1);
 	sl_unc = ff_pol1->GetParError(1);
+
+	return 0;
 }
 
 //----------------------------------------------------------------------------------------------------
 
-TGraphErrors* BuildGraphFromDirectory(TDirectory *dir)
+TGraphErrors* BuildGraphFromDirectory(TDirectory *dir, bool aligned)
 {
 	TGraphErrors *g = new TGraphErrors();
 
@@ -70,7 +78,9 @@ TGraphErrors* BuildGraphFromDirectory(TDirectory *dir)
 
 		TProfile *p = (TProfile *) k->ReadObj();
 		double sl=0., sl_unc=0.;
-		FitProfile(p, sl, sl_unc);
+		int fr = FitProfile(p, aligned, sl, sl_unc);
+		if (fr != 0)
+			continue;
 
 		if (debug_slope_fits)
 			p->Write(name.c_str());
@@ -85,9 +95,13 @@ TGraphErrors* BuildGraphFromDirectory(TDirectory *dir)
 
 //----------------------------------------------------------------------------------------------------
 
-void DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &range_ref, const SelectionRange &range_test,
+int DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &range_ref, const SelectionRange &range_test,
 		double sh_min, double sh_max, double &sh_best, double &sh_best_unc)
 {
+	// require minimal number of points
+	if (g_ref->GetN() < 5 || g_test->GetN() < 5)
+		return 1;
+
 	// book match-quality graphs
 	TGraph *g_n_points = new TGraph(); g_n_points->SetName("g_n_points"); g_n_points->SetTitle(";sh;N");
 	TGraph *g_chi_sq = new TGraph(); g_chi_sq->SetName("g_chi_sq"); g_chi_sq->SetTitle(";sh;S2");
@@ -195,6 +209,8 @@ void DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ra
 	g_test_shifted->SetLineColor(2);
 	g_test_shifted->Draw("pl");
 	c_cmp->Write();
+
+	return 0;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -240,14 +256,12 @@ int main()
 	// processing
 	for (auto ref : cfg.matching_1d_reference_datasets)
 	{
-		/*
 		if (ref == "default")
 		{
 			char buf[100];
 			sprintf(buf, "data/alig/fill_6228/xangle_%u/DS1", cfg.xangle);
 			ref = buf;
 		}
-		*/
 
 		printf("-------------------- reference dataset: %s\n", ref.c_str());
 
@@ -273,9 +287,9 @@ int main()
 
 			// build graphs for matching
 			gDirectory = rp_dir->mkdir("fits_ref");
-			TGraphErrors *g_ref = BuildGraphFromDirectory(d_ref);
+			TGraphErrors *g_ref = BuildGraphFromDirectory(d_ref, true);
 			gDirectory = rp_dir->mkdir("fits_test");
-			TGraphErrors *g_test = BuildGraphFromDirectory(d_test);
+			TGraphErrors *g_test = BuildGraphFromDirectory(d_test, false);
 
 			gDirectory = rp_dir;
 			g_ref->Write("g_ref");
