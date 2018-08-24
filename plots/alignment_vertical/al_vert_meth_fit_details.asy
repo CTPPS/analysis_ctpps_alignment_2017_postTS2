@@ -16,11 +16,11 @@ xTicksDef = LeftTicks(1., 0.5);
 yTicksDef = RightTicks(0.2, 0.1);
 
 string datasets[] = {
-	"fill_5839/xangle_150/DoubleEG",
-	"fill_5974/xangle_150/DoubleEG",
-	"fill_6090/xangle_150/DoubleEG",
-	"fill_6155/xangle_150/DoubleEG",
-	"fill_6192/xangle_150/DoubleEG",
+	"fill_6239/xangle_150/DoubleEG",
+	"fill_6268/xangle_150/DoubleEG",
+	"fill_6287/xangle_150/DoubleEG",
+	"fill_6323/xangle_150/DoubleEG",
+	"fill_6371/xangle_150/DoubleEG",
 };
 
 //----------------------------------------------------------------------------------------------------

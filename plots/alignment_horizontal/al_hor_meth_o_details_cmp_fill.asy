@@ -3,14 +3,14 @@ import pad_layout;
 
 string topDir = "../../data/phys/";
 
-string reference = "data_alig_fill_5685_xangle_150_DS1";
+string reference = "data_alig_fill_6228_xangle_150_DS1";
 
 string datasets[] = {
-	"fill_5839/xangle_150/DoubleEG",
-	"fill_5974/xangle_150/DoubleEG",
-	"fill_6090/xangle_150/DoubleEG",
-	"fill_6155/xangle_150/DoubleEG",
-	//"fill_6192/xangle_150/DoubleEG",
+	"fill_6239/xangle_150/DoubleEG",
+	"fill_6268/xangle_150/DoubleEG",
+	"fill_6287/xangle_150/DoubleEG",
+	"fill_6323/xangle_150/DoubleEG",
+	"fill_6371/xangle_150/DoubleEG",
 };
 
 string rps[], rp_labels[];
@@ -43,6 +43,10 @@ for (int dsi : datasets.keys)
 
 		string f = topDir + dataset+"/x_alignment_meth_o.root";
 		string p_base = reference + "/" + rps[rpi] + "/c_cmp";
+		RootObject obj_base = RootGetObject(f, p_base, error=false);
+		if (!obj_base.valid)
+			continue;
+
 		draw(RootGetObject(f, p_base + "#0"), "p,l", black);
 		draw(RootGetObject(f, p_base + "#1"), "p,l", blue);
 		draw(RootGetObject(f, p_base + "#2"), "p,l", red);

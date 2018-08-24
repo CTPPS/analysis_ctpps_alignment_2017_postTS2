@@ -15,20 +15,11 @@ xTicksDef = LeftTicks(1., 0.5);
 yTicksDef = RightTicks(0.1, 0.05);
 
 string datasets[] = {
-	"fill_5839/xangle_150/DoubleEG",
-	"fill_5974/xangle_150/DoubleEG",
-	"fill_6090/xangle_150/DoubleEG",
-	"fill_6155/xangle_150/DoubleEG",
-	"fill_6192/xangle_150/DoubleEG",
-};
-
-string datasets[] = {
-	"fill_5839/xangle_150/ZeroBias",
-	"fill_6060/xangle_150/ZeroBias",
-	"fill_6084/xangle_150/ZeroBias",
-	"fill_6097/xangle_150/ZeroBias",
-	"fill_6147/xangle_150/ZeroBias",
-	"fill_6180/xangle_150/ZeroBias",
+	"fill_6239/xangle_150/DoubleEG",
+	"fill_6268/xangle_150/DoubleEG",
+	"fill_6287/xangle_150/DoubleEG",
+	"fill_6323/xangle_150/DoubleEG",
+	"fill_6371/xangle_150/DoubleEG",
 };
 
 //----------------------------------------------------------------------------------------------------

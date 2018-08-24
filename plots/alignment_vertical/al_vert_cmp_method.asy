@@ -22,10 +22,10 @@ real sfa = 0.3;
 int rp_ids[];
 string rps[], rp_labels[], rp_dirs[];
 real rp_y_min[], rp_y_max[];
-rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr"); rp_y_min.push(3); rp_y_max.push(4); rp_dirs.push("sector 45/F");
-rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr"); rp_y_min.push(3); rp_y_max.push(4); rp_dirs.push("sector 45/N");
-rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_y_min.push(3); rp_y_max.push(4); rp_dirs.push("sector 56/N");
-rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(3); rp_y_max.push(4); rp_dirs.push("sector 56/F");
+rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr"); rp_y_min.push(2); rp_y_max.push(4); rp_dirs.push("sector 45/F");
+rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr"); rp_y_min.push(2); rp_y_max.push(4); rp_dirs.push("sector 45/N");
+rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_y_min.push(2); rp_y_max.push(4); rp_dirs.push("sector 56/N");
+rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(2); rp_y_max.push(4); rp_dirs.push("sector 56/F");
 
 xSizeDef = 40cm;
 

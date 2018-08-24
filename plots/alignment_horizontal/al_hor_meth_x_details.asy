@@ -1,12 +1,9 @@
 import root;
 import pad_layout;
 
-string topDir = "../../";
+string topDir = "../../data/phys/";
 
-//string dataset = "period1_physics/fill_4964";
-//string dataset = "period1_physics/fill_5024";
-//string dataset = "period1_physics/fill_5052";
-string dataset = "period1_physics/fill_5267";
+string dataset = "fill_6239/xangle_150/DoubleEG";
 
 string reference = "10077";
 
