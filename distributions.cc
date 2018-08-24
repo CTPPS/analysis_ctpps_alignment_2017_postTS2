@@ -14,6 +14,8 @@
 
 #include "DataFormats/CTPPSDetId/interface/TotemRPDetId.h"
 #include "DataFormats/CTPPSReco/interface/CTPPSLocalTrackLite.h"
+#include "DataFormats/Common/interface/DetSetVector.h"
+#include "DataFormats/CTPPSReco/interface/TotemRPLocalTrack.h"
 
 #include <vector>
 #include <string>
@@ -137,6 +139,13 @@ struct SectorData
 	// profiles
 	map<unsigned int, Profile> m_p_y_vs_x_aft_sel;
 
+	// near-far plots
+	TProfile *p_x_diffFN_vs_x_N;
+	TProfile *p_y_diffFN_vs_y_N;
+	TProfile *p_y_diffFN_vs_y_F;
+
+	map<unsigned int, TProfile *> x_slice_p_y_diffFN_vs_y_F, x_slice_p_y_diffFN_vs_y_N;
+
 	SectorData(const string _name, unsigned int _rpIdUp, unsigned int _rpIdDw, const SectorConfig &_scfg);
 
 	unsigned int Process(const vector<CTPPSLocalTrackLite> &tracks);
@@ -164,7 +173,7 @@ SectorData::SectorData(const string _name, unsigned int _rpIdUp, unsigned int _r
 	const double y_min = -20., y_max = +20.;
 
 	// hit distributions
-	m_h1_x_bef_sel[rpIdUp] = new TH1D("", ";x", 10*n_bins_x, x_min_pix, x_max_pix);
+	m_h1_x_bef_sel[rpIdUp] = new TH1D("", ";x", 10*n_bins_x, x_min_str, x_max_str);
 	m_h1_x_bef_sel[rpIdDw] = new TH1D("", ";x", 10*n_bins_x, x_min_pix, x_max_pix);
 
 	m_h2_y_vs_x_bef_sel[rpIdUp] = new TH2D("", ";x;y", n_bins_x, x_min_str, x_max_str, n_bins_y, y_min, y_max);
@@ -192,6 +201,17 @@ SectorData::SectorData(const string _name, unsigned int _rpIdUp, unsigned int _r
 	// profiles
 	m_p_y_vs_x_aft_sel[rpIdUp] = Profile(m_h2_y_vs_x_aft_sel[rpIdUp]);
 	m_p_y_vs_x_aft_sel[rpIdDw] = Profile(m_h2_y_vs_x_aft_sel[rpIdDw]);
+
+	// near-far plots
+	p_x_diffFN_vs_x_N = new TProfile("", ";x_{N};x_{F} - x_{N}", 100, 0., 20.);
+	p_y_diffFN_vs_y_N = new TProfile("", ";y_{N};y_{F} - y_{N}", 200, -10., 10.);
+	p_y_diffFN_vs_y_F = new TProfile("", ";y_{F};y_{F} - y_{N}", 200, -10., 10.);
+
+	for (int i = 0; i < scfg.nr_x_slice_n; ++i)
+		x_slice_p_y_diffFN_vs_y_N[i] = new TProfile("", ";y_{N};x_{F} - y_{N}", 100, 0., 20.);
+
+	for (int i = 0; i < scfg.fr_x_slice_n; ++i)
+		x_slice_p_y_diffFN_vs_y_F[i] = new TProfile("", ";y_{F};x_{F} - y_{N}", 100, 0., 20.);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -305,6 +325,26 @@ unsigned int SectorData::Process(const vector<CTPPSLocalTrackLite> &tracks)
 
 				m_p_y_vs_x_aft_sel[rpIdUp].Fill(trUp.getX(), trUp.getY());
 				m_p_y_vs_x_aft_sel[rpIdDw].Fill(trDw.getX(), trDw.getY());
+
+				p_x_diffFN_vs_x_N->Fill(trUp.getX(), trDw.getX() - trUp.getX());
+
+				// TODO: remove hardcoded configuration
+				double x_min = 0., x_max = 0.;
+				if (name == "sector 45") { x_min = 7.8; x_max = 16.; }
+				if (name == "sector 56") { x_max = 5.8; x_max = 15.; }
+				if (trUp.getX() > x_min && trUp.getX() < x_max)
+				{
+					p_y_diffFN_vs_y_N->Fill(trUp.getY(), trDw.getY() - trUp.getY());
+					p_y_diffFN_vs_y_F->Fill(trDw.getY(), trDw.getY() - trUp.getY());
+				}
+
+				idx = (trUp.getX() - scfg.nr_x_slice_min) / scfg.nr_x_slice_w;
+				if (idx >= 0 && idx < scfg.nr_x_slice_n)
+					x_slice_p_y_diffFN_vs_y_N[idx]->Fill(trUp.getY(), trDw.getY() - trUp.getY());
+
+				idx = (trDw.getX() - scfg.fr_x_slice_min) / scfg.fr_x_slice_w;
+				if (idx >= 0 && idx < scfg.fr_x_slice_n)
+					x_slice_p_y_diffFN_vs_y_F[idx]->Fill(trDw.getY(), trDw.getY() - trUp.getY());
 			}
 		}
 	}
@@ -374,6 +414,36 @@ void SectorData::Write() const
 		p.second.Write();
 	}
 
+	// near-far plots
+	TDirectory *d_near_far = d_sector->mkdir("near_far");
+	gDirectory = d_near_far;
+
+	p_x_diffFN_vs_x_N->Write("p_x_diffFN_vs_x_N");
+	p_y_diffFN_vs_y_N->Write("p_y_diffFN_vs_y_N");
+	p_y_diffFN_vs_y_F->Write("p_y_diffFN_vs_y_F");
+
+	gDirectory = d_near_far->mkdir("p_y_diffFN_vs_y_N, x slices");
+	for (const auto &p : x_slice_p_y_diffFN_vs_y_N)
+	{
+		const double x_min = scfg.nr_x_slice_min + p.first * scfg.nr_x_slice_w;
+		const double x_max = scfg.nr_x_slice_min + (p.first+1) * scfg.nr_x_slice_w;
+
+		char buf[100];
+		sprintf(buf, "%.1f-%.1f", x_min, x_max);
+		p.second->Write(buf);
+	}
+
+	gDirectory = d_near_far->mkdir("p_y_diffFN_vs_y_F, x slices");
+	for (const auto &p : x_slice_p_y_diffFN_vs_y_F)
+	{
+		const double x_min = scfg.fr_x_slice_min + p.first * scfg.fr_x_slice_w;
+		const double x_max = scfg.fr_x_slice_min + (p.first+1) * scfg.fr_x_slice_w;
+
+		char buf[100];
+		sprintf(buf, "%.1f-%.1f", x_min, x_max);
+		p.second->Write(buf);
+	}
+
 	// clean up
 	gDirectory = d_top;
 }
@@ -419,7 +489,7 @@ int main()
 		ev_count++;
 
 		// TODO: comment out
-		//if (tr_sel_count > 1000)
+		//if (ev_sel_count_45 + ev_sel_count_56 > 10000)
 		//	break;
 
 		// get track data
