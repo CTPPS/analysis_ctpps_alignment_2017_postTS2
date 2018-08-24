@@ -208,10 +208,10 @@ SectorData::SectorData(const string _name, unsigned int _rpIdUp, unsigned int _r
 	p_y_diffFN_vs_y_F = new TProfile("", ";y_{F};y_{F} - y_{N}", 200, -10., 10.);
 
 	for (int i = 0; i < scfg.nr_x_slice_n; ++i)
-		x_slice_p_y_diffFN_vs_y_N[i] = new TProfile("", ";y_{N};x_{F} - y_{N}", 100, 0., 20.);
+		x_slice_p_y_diffFN_vs_y_N[i] = new TProfile("", ";y_{N};x_{F} - y_{N}", 100, -10., +10.);
 
 	for (int i = 0; i < scfg.fr_x_slice_n; ++i)
-		x_slice_p_y_diffFN_vs_y_F[i] = new TProfile("", ";y_{F};x_{F} - y_{N}", 100, 0., 20.);
+		x_slice_p_y_diffFN_vs_y_F[i] = new TProfile("", ";y_{F};x_{F} - y_{N}", 100, -10., +10.);
 }
 
 //----------------------------------------------------------------------------------------------------
