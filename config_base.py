@@ -34,6 +34,14 @@ config = cms.PSet(
 	  cut_v_a = cms.double(-1.07),
 	  cut_v_c = cms.double(1.63),
 	  cut_v_si = cms.double(0.15)
+
+      nr_x_slice_min = cms.double(6.5),
+      nr_x_slice_max = cms.double(19),
+      nr_x_slice_w = cms.double(0.2),
+
+      fr_x_slice_min = cms.double(44.5),
+      fr_x_slice_max = cms.double(58),
+      fr_x_slice_w = cms.double(0.2),
     ),
 
     sector_56 = cms.PSet(
@@ -46,6 +54,14 @@ config = cms.PSet(
 	  cut_v_a = cms.double(-1.07),
 	  cut_v_c = cms.double(1.49),
 	  cut_v_si = cms.double(0.15)
+
+      nr_x_slice_min = cms.double(5.5),
+      nr_x_slice_max = cms.double(17.),
+      nr_x_slice_w = cms.double(0.2),
+
+      fr_x_slice_min = cms.double(44.5),
+      fr_x_slice_max = cms.double(56.),
+      fr_x_slice_w = cms.double(0.2),
     ),
 
     matching_1d = cms.PSet(
@@ -74,6 +90,25 @@ config = cms.PSet(
         x_max = cms.double(57.),
         sh_min = cms.double(-43.2),
         sh_max = cms.double(-41.2)
+      )
+    ),
+
+    alignment_y = cms.PSet(
+      rp_L_2_F = cms.PSet(
+        x_min = cms.double(45.5),
+        x_max = cms.double(49.),
+      ),
+      rp_L_1_F = cms.PSet(
+        x_min = cms.double(6.5),
+        x_max = cms.double(10.),
+      ),
+      rp_R_1_F = cms.PSet(
+        x_min = cms.double(5.5),
+        x_max = cms.double(7.5),
+      ),
+      rp_R_2_F = cms.PSet(
+        x_min = cms.double(45.),
+        x_max = cms.double(48.),
       )
     )
 )

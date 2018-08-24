@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <string>
+#include <cmath>
 
 using namespace std;
 
@@ -30,6 +31,11 @@ struct SectorConfig
 
 	bool cut_v_apply;
 	double cut_v_a, cut_v_c, cut_v_si;
+
+	signed int nr_x_slice_n;
+	double nr_x_slice_min, nr_x_slice_w;
+	signed int fr_x_slice_n;
+	double fr_x_slice_min, fr_x_slice_w;
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -56,6 +62,8 @@ struct Config
 
 	map<unsigned int, SelectionRange> matching_1d_ranges;
 	map<unsigned int, SelectionRange> matching_1d_shift_ranges;
+
+	map<unsigned int, SelectionRange> alignment_y_ranges;
 
 	int LoadFrom(const string &f);
 
@@ -104,6 +112,14 @@ int Config::LoadFrom(const string &f_in)
 		sectorConfig45.cut_v_a = sps.getParameter<double>("cut_v_a");
 		sectorConfig45.cut_v_c = sps.getParameter<double>("cut_v_c");
 		sectorConfig45.cut_v_si = sps.getParameter<double>("cut_v_si");
+
+		sectorConfig45.nr_x_slice_min = sps.getParameter<double>("nr_x_slice_min");
+		sectorConfig45.nr_x_slice_w = sps.getParameter<double>("nr_x_slice_w");
+		sectorConfig45.nr_x_slice_n = ceil((sps.getParameter<double>("nr_x_slice_max") - sectorConfig45.nr_x_slice_min) / sectorConfig45.nr_x_slice_w);
+
+		sectorConfig45.fr_x_slice_min = sps.getParameter<double>("fr_x_slice_min");
+		sectorConfig45.fr_x_slice_w = sps.getParameter<double>("fr_x_slice_w");
+		sectorConfig45.fr_x_slice_n = ceil((sps.getParameter<double>("fr_x_slice_max") - sectorConfig45.fr_x_slice_min) / sectorConfig45.fr_x_slice_w);
 	}
 
 	{
@@ -118,6 +134,14 @@ int Config::LoadFrom(const string &f_in)
 		sectorConfig56.cut_v_a = sps.getParameter<double>("cut_v_a");
 		sectorConfig56.cut_v_c = sps.getParameter<double>("cut_v_c");
 		sectorConfig56.cut_v_si = sps.getParameter<double>("cut_v_si");
+
+		sectorConfig56.nr_x_slice_min = sps.getParameter<double>("nr_x_slice_min");
+		sectorConfig56.nr_x_slice_w = sps.getParameter<double>("nr_x_slice_w");
+		sectorConfig56.nr_x_slice_n = ceil((sps.getParameter<double>("nr_x_slice_max") - sectorConfig56.nr_x_slice_min) / sectorConfig56.nr_x_slice_w);
+
+		sectorConfig56.fr_x_slice_min = sps.getParameter<double>("fr_x_slice_min");
+		sectorConfig56.fr_x_slice_w = sps.getParameter<double>("fr_x_slice_w");
+		sectorConfig56.fr_x_slice_n = ceil((sps.getParameter<double>("fr_x_slice_max") - sectorConfig56.fr_x_slice_min) / sectorConfig56.fr_x_slice_w);
 	}
 
 	const auto &c_m1d = config.getParameter<edm::ParameterSet>("matching_1d");
@@ -128,6 +152,13 @@ int Config::LoadFrom(const string &f_in)
 		const auto &ps = c_m1d.getParameter<edm::ParameterSet>("rp_" + p.second);
 		matching_1d_ranges[p.first] = SelectionRange(ps.getParameter<double>("x_min"), ps.getParameter<double>("x_max"));
 		matching_1d_shift_ranges[p.first] = SelectionRange(ps.getParameter<double>("sh_min"), ps.getParameter<double>("sh_max"));
+	}
+
+	const auto &c_ay = config.getParameter<edm::ParameterSet>("alignment_y");
+	for (const auto &p : rp_tags)
+	{
+		const auto &ps = c_ay.getParameter<edm::ParameterSet>("rp_" + p.second);
+		alignment_y_ranges[p.first] = SelectionRange(ps.getParameter<double>("x_min"), ps.getParameter<double>("x_max"));
 	}
 
 	return 0;
@@ -167,9 +198,13 @@ void Config::Print(bool print_input_files) const
 	printf("* sector 45\n");
 	printf("    cut_h: apply = %u, a = %.3f, c = %.3f, si = %.3f\n", sectorConfig45.cut_h_apply, sectorConfig45.cut_h_a, sectorConfig45.cut_h_c, sectorConfig45.cut_h_si);
 	printf("    cut_v: apply = %u, a = %.3f, c = %.3f, si = %.3f\n", sectorConfig45.cut_v_apply, sectorConfig45.cut_v_a, sectorConfig45.cut_v_c, sectorConfig45.cut_v_si);
+	printf("    x slices, nr: min = %.2f, w = %.2f, n = %u\n", sectorConfig45.nr_x_slice_min, sectorConfig45.nr_x_slice_w, sectorConfig45.nr_x_slice_n);
+	printf("    x slices, fr: min = %.2f, w = %.2f, n = %u\n", sectorConfig45.fr_x_slice_min, sectorConfig45.fr_x_slice_w, sectorConfig45.fr_x_slice_n);
 	printf("* sector 56\n");
 	printf("    cut_h: apply = %u, a = %.3f, c = %.3f, si = %.3f\n", sectorConfig56.cut_h_apply, sectorConfig56.cut_h_a, sectorConfig56.cut_h_c, sectorConfig56.cut_h_si);
 	printf("    cut_v: apply = %u, a = %.3f, c = %.3f, si = %.3f\n", sectorConfig56.cut_v_apply, sectorConfig56.cut_v_a, sectorConfig56.cut_v_c, sectorConfig56.cut_v_si);
+	printf("    x slices, nr: min = %.2f, w = %.2f, n = %u\n", sectorConfig56.nr_x_slice_min, sectorConfig56.nr_x_slice_w, sectorConfig56.nr_x_slice_n);
+	printf("    x slices, fr: min = %.2f, w = %.2f, n = %u\n", sectorConfig56.fr_x_slice_min, sectorConfig56.fr_x_slice_w, sectorConfig56.fr_x_slice_n);
 
 	printf("\n");
 	printf("* 1D matching\n");
@@ -183,6 +218,9 @@ void Config::Print(bool print_input_files) const
 			p.first, p.second.x_min, p.second.x_max, it_sh->second.x_min, it_sh->second.x_max);
 	}
 
+	printf("\n* alignment_y\n");
+	for (const auto &p : alignment_y_ranges)
+		printf("    RP %u: x_min = %.3f, x_max = %.3f\n", p.first, p.second.x_min, p.second.x_max);
 }
 
 //----------------------------------------------------------------------------------------------------
