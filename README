@@ -13,7 +13,7 @@ ANALYSIS
 ----------------------------------------------------------------------------------------------------
 
 1) Run distributions
-	./run distributions.cc data/alig*/fill_*/xangle_*/DS? -submit
+	./run distributions.cc data/alig/fill_*/xangle_*/DS? -submit
 	./run distributions.cc data/phys/fill_*/xangle_*/*/ -submit
 
 2) Horizontal alignment
