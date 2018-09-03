@@ -121,13 +121,13 @@ void BuildStdDevProfile(TGraph *g_input, double x_shift, const SelectionRange &r
 //----------------------------------------------------------------------------------------------------
 
 void DoMatchMethodX(TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref, const SelectionRange &r_ref, double sh_min, double sh_max,
-		double &result)
+		double &result, int bin_number)
 {
 	printf("        test range: %.3f to %.3f\n", r_test.x_min, r_test.x_max);
 	printf("        ref range: %.3f to %.3f\n", r_ref.x_min, r_ref.x_max);
 
 	// prepare reference histogram
-	TH1D *h_ref = new TH1D("h_ref", ";x", 140, 2., 16.);
+	TH1D *h_ref = new TH1D("h_ref", ";x", bin_number, 2., 16.);
 	BuildHistogram(g_ref, 0., r_ref, h_ref);
 
 	// book match-quality graphs
@@ -144,7 +144,7 @@ void DoMatchMethodX(TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref,
 	h_test->SetName("h_test");
 
 	// loop over shifts
-	double sh_step = 0.010;	// mm
+	double sh_step = 0.05;	// mm
 	for (double sh = sh_min; sh <= sh_max; sh += sh_step)
 	{
 		// build test histogram
@@ -300,7 +300,7 @@ void DoMatchMethodY(TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref,
 	h_test->SetName("h_test");
 
 	// loop over shifts
-	double sh_step = 0.025;	// mm
+	double sh_step = 0.05;	// mm
 	for (double sh = sh_min; sh <= sh_max; sh += sh_step)
 	{
 		// build test histogram
@@ -395,22 +395,26 @@ void DoMatchMethodY(TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref,
 
 //----------------------------------------------------------------------------------------------------
 
-void DoMatch(unsigned int /*rpId*/,
+void DoMatch(unsigned int rpId,
 		TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref, const SelectionRange &r_ref,
 		double sh_min, double sh_max,
 		double &r_method_x, double &r_method_y)
 {
+
+	int bin_number = 140;
 	TDirectory *d_top = gDirectory;
 
 	// method x
-	r_method_x = 0.;
-	/*
+	SelectionRange r_test_x;
+        if( rpId == 3) {r_test_x.x_min = 12.; r_test_x.x_max=19.;}
+        else if( rpId == 23) {r_test_x.x_min = 52.; r_test_x.x_max = 58.; bin_number = 98;}
+        else if( rpId == 123) {r_test_x.x_min = 52.; r_test_x.x_max = 58.; bin_number = 98;}
+        else { r_test_x = r_test;}
+	
 	gDirectory = d_top->mkdir("method x");
 	printf("    method x\n");
-	SelectionRange r_test_x = r_test;
-	DoMatchMethodX(g_test, r_test_x, g_ref, r_ref, sh_min, sh_max, r_method_x);
-	*/
-
+	DoMatchMethodX(g_test, r_test_x, g_ref, r_ref, sh_min, sh_max, r_method_x, bin_number);
+	
 	// method y
 	gDirectory = d_top->mkdir("method y");
 	printf("    method y\n");
