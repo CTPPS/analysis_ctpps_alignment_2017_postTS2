@@ -129,7 +129,7 @@ int DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ran
 	// optimalisation variables
 	double S2_norm_best = 1E100;
 
-	double sh_step = 0.025;	// mm
+	double sh_step = 0.010;	// mm
 	for (double sh = sh_min; sh <= sh_max; sh += sh_step)
 	{
 		// calculate chi^2
