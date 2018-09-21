@@ -18,16 +18,6 @@ int xangle = 150;
 
 real sfa = 0.3;
 
-/*
-int rp_ids[];
-string rps[], rp_labels[];
-real rp_y_min[], rp_y_max[], rp_y_cen[];
-rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr"); rp_y_min.push(0); rp_y_max.push(0.2); rp_y_cen.push(0.10);
-rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr"); rp_y_min.push(0); rp_y_max.push(0.2); rp_y_cen.push(0.11);
-rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_y_min.push(0.); rp_y_max.push(0.2); rp_y_cen.push(0.08);
-rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(0.); rp_y_max.push(0.2); rp_y_cen.push(0.06);
-*/
-
 string sectors[], s_labels[];
 real s_y_mins[], s_y_maxs[], s_y_cens[];
 sectors.push("45"); s_labels.push("sector 45"); s_y_mins.push(-0.02); s_y_maxs.push(+0.02); s_y_cens.push(+0.008);

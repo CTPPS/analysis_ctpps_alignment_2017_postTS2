@@ -58,7 +58,7 @@ AddToLegend(format("(xangle %u)", xangle));
 for (int mi : abs_methods.keys)
 	AddToLegend(abs_methods[mi], mCi + 3pt + am_pens[mi]);
 
-AddToLegend("method rel (fs)", mCi+4pt+magenta);
+AddToLegend("method rel (fs)", mSq+4pt+magenta);
 
 AttachLegend();
 

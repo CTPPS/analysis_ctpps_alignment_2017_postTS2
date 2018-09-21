@@ -13,8 +13,8 @@ string datasets[] = {
 
 string sectors[], s_labels[];
 real s_y_mins[], s_y_maxs[];
-sectors.push("45"); s_labels.push("L"); s_y_mins.push(38.2); s_y_maxs.push(38.7);
-sectors.push("56"); s_labels.push("R"); s_y_mins.push(39.1); s_y_maxs.push(39.6);
+sectors.push("45"); s_labels.push("sector 45"); s_y_mins.push(38.2); s_y_maxs.push(38.7);
+sectors.push("56"); s_labels.push("sector 56"); s_y_mins.push(39.1); s_y_maxs.push(39.6);
 
 ySizeDef = 5cm;
 
@@ -42,7 +42,7 @@ for (int dsi : datasets.keys)
 		string p_base = "sector " + sectors[si] + "/p_x_diffFN_vs_x_N";
 
 		RootObject hist = RootGetObject(f, p_base, error=false);
-		RootObject fit = RootGetObject(f, p_base + "|ff", error=false);
+		RootObject fit = RootGetObject(f, p_base + "|ff_sl_fix", error=false);
 
 		if (!hist.valid || !fit.valid)
 			continue;
