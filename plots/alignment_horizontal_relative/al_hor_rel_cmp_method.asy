@@ -27,10 +27,10 @@ string ref_label = "data_alig_fill_6228_xangle_150_DS1";
 string sectors[], s_labels[];
 real s_y_mins[], s_y_maxs[], s_y_cens[];
 string s_rp_Ns[], s_rp_Fs[];
-sectors.push("45"); s_labels.push("sector 45"); s_y_mins.push(-0.02); s_y_maxs.push(+0.02); s_y_cens.push(+0.008); s_rp_Ns.push("L_1_F"); s_rp_Fs.push("L_2_F");
-sectors.push("56"); s_labels.push("sector 56"); s_y_mins.push(-0.03); s_y_maxs.push(+0.01); s_y_cens.push(-0.012); s_rp_Ns.push("R_1_F"); s_rp_Fs.push("R_2_F");
+sectors.push("45"); s_labels.push("sector 45"); s_y_mins.push(38.0); s_y_maxs.push(39.0); s_y_cens.push(+0.008); s_rp_Ns.push("L_1_F"); s_rp_Fs.push("L_2_F");
+sectors.push("56"); s_labels.push("sector 56"); s_y_mins.push(38.8); s_y_maxs.push(39.8); s_y_cens.push(-0.012); s_rp_Ns.push("R_1_F"); s_rp_Fs.push("R_2_F");
 
-//yTicksDef = RightTicks(0.2, 0.1);
+yTicksDef = RightTicks(0.2, 0.1);
 
 xSizeDef = 40cm;
 
@@ -175,8 +175,8 @@ for (int si : sectors.keys)
 		}
 	}
 
-	xlimits(-1, fill_data.length, Crop);
-	//limits((-1, rp_shift_m[rpi]-1), (fill_data.length, rp_shift_m[rpi]+1), Crop);
+	//xlimits(-1, fill_data.length, Crop);
+	limits((-1, s_y_mins[si]), (fill_data.length, s_y_maxs[si]), Crop);
 
 	AttachLegend("{\SetFontSizesXX " + s_labels[si] + "}");
 }
