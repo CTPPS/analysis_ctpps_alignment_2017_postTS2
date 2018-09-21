@@ -45,6 +45,15 @@ int FitProfile(TProfile *p, bool aligned, double &sl, double &sl_unc)
 	if (p->GetEntries() < 100)
 		return 1;
 
+	for (int bi = 1; bi <= p->GetNbinsX(); ++bi)
+	{
+		if (p->GetBinEntries(bi) < 4)
+		{
+			p->SetBinContent(bi, 0.);
+			p->SetBinError(bi, 0.);
+		}
+	}
+
 	double x_min = 1., x_max = 7.;
 	if (aligned) x_min = -3., x_max = +3.;
 
@@ -77,6 +86,7 @@ TGraphErrors* BuildGraphFromDirectory(TDirectory *dir, bool aligned)
 		//printf("  %s, %.3f, %.3f\n", name.c_str(), x_min, x_max);
 
 		TProfile *p = (TProfile *) k->ReadObj();
+
 		double sl=0., sl_unc=0.;
 		int fr = FitProfile(p, aligned, sl, sl_unc);
 		if (fr != 0)
@@ -101,6 +111,15 @@ int DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ran
 	// require minimal number of points
 	if (g_ref->GetN() < 5 || g_test->GetN() < 5)
 		return 1;
+
+	// check actual range of test graph
+	double x_min_g_test = +1E100, x_max_g_test = -1E100;
+	for (int i = 0; i < g_test->GetN(); ++i)
+	{
+		const double x = g_test->GetX()[i];
+		x_min_g_test = min(x_min_g_test, x);
+		x_max_g_test = max(x_max_g_test, x);
+	}
 
 	// book match-quality graphs
 	TGraph *g_n_points = new TGraph(); g_n_points->SetName("g_n_points"); g_n_points->SetTitle(";sh;N");
@@ -128,6 +147,9 @@ int DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ran
 			if (x_ref < range_ref.x_min || x_ref > range_ref.x_max || x_test < range_test.x_min || x_test > range_test.x_max)
 				continue;
 
+			if (x_test < x_min_g_test || x_test > x_max_g_test)
+				continue;
+
 			const double y_test = g_test->Eval(x_test);
 
 			int js = -1, jg = -1;
@@ -152,7 +174,8 @@ int DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ran
 			const double y_test_unc = ( g_test->GetErrorY(js) + g_test->GetErrorY(jg) ) / 2.;
 
 			n_points++;
-			S2 += pow(y_test - y_ref, 2.) / (y_ref_unc*y_ref_unc + y_test_unc*y_test_unc);
+			const double S2_inc = pow(y_test - y_ref, 2.) / (y_ref_unc*y_ref_unc + y_test_unc*y_test_unc);
+			S2 += S2_inc;
 		}
 
 		// update best result
