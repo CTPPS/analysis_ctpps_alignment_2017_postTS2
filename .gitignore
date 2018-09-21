@@ -15,5 +15,6 @@ xangle_*
 distributions
 match
 x_alignment_meth_o
+x_alignment_relative
 y_alignment
 y_alignment_alt
