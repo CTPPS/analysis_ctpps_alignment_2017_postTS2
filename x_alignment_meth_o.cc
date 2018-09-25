@@ -9,6 +9,7 @@
 #include "TF1.h"
 #include "TProfile.h"
 #include "TKey.h"
+#include "TSpline.h"
 
 #include <vector>
 #include <string>
@@ -112,7 +113,7 @@ int DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ran
 	if (g_ref->GetN() < 5 || g_test->GetN() < 5)
 		return 1;
 
-	// check actual range of test graph
+	// check actual range of test graph - TODO: needed ?
 	double x_min_g_test = +1E100, x_max_g_test = -1E100;
 	for (int i = 0; i < g_test->GetN(); ++i)
 	{
@@ -120,6 +121,9 @@ int DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ran
 		x_min_g_test = min(x_min_g_test, x);
 		x_max_g_test = max(x_max_g_test, x);
 	}
+
+	// make spline from g_ref
+	TSpline3 *s_ref = new TSpline3("s_ref", g_ref->GetX(), g_ref->GetY(), g_ref->GetN());
 
 	// book match-quality graphs
 	TGraph *g_n_points = new TGraph(); g_n_points->SetName("g_n_points"); g_n_points->SetTitle(";sh;N");
@@ -136,33 +140,30 @@ int DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ran
 		int n_points = 0;
 		double S2 = 0.;
 
-		for (int i = 0; i < g_ref->GetN(); ++i)
+		for (int i = 0; i < g_test->GetN(); ++i)
 		{
-			const double x_ref = g_ref->GetX()[i];
-			const double y_ref = g_ref->GetY()[i];
-			const double y_ref_unc = g_ref->GetErrorY(i);
+			const double x_test = g_test->GetX()[i];
+			const double y_test = g_test->GetY()[i];
+			const double y_test_unc = g_test->GetErrorY(i);
 
-			const double x_test = x_ref - sh;
+			const double x_ref = x_test + sh;
 
 			if (x_ref < range_ref.x_min || x_ref > range_ref.x_max || x_test < range_test.x_min || x_test > range_test.x_max)
 				continue;
 
-			if (x_test < x_min_g_test || x_test > x_max_g_test)
-				continue;
-
-			const double y_test = g_test->Eval(x_test);
+			const double y_ref = s_ref->Eval(x_ref);
 
 			int js = -1, jg = -1;
 			double xs = -1E100, xg = +1E100;
-			for (int j = 0; j < g_test->GetN(); ++j)
+			for (int j = 0; j < g_ref->GetN(); ++j)
 			{
-				const double x = g_test->GetX()[j];
-				if (x < x_test && x > xs)
+				const double x = g_ref->GetX()[j];
+				if (x < x_ref && x > xs)
 				{
 					xs = x;
 					js = j;
 				}
-				if (x > x_test && x < xg)
+				if (x > x_ref && x < xg)
 				{
 					xg = x;
 					jg = j;
@@ -171,7 +172,7 @@ int DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ran
 			if (jg == -1)
 				jg = js;
 
-			const double y_test_unc = ( g_test->GetErrorY(js) + g_test->GetErrorY(jg) ) / 2.;
+			const double y_ref_unc = ( g_ref->GetErrorY(js) + g_ref->GetErrorY(jg) ) / 2.;
 
 			n_points++;
 			const double S2_inc = pow(y_test - y_ref, 2.) / (y_ref_unc*y_ref_unc + y_test_unc*y_test_unc);
@@ -232,6 +233,9 @@ int DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ran
 	g_test_shifted->SetLineColor(2);
 	g_test_shifted->Draw("pl");
 	c_cmp->Write();
+
+	// clean up
+	delete s_ref;
 
 	return 0;
 }
