@@ -328,7 +328,7 @@ unsigned int SectorData::Process(const vector<CTPPSLocalTrackLite> &tracks)
 
 				p_x_diffFN_vs_x_N->Fill(trUp.getX(), trDw.getX() - trUp.getX());
 
-				const auto &range = cfg.alignment_y_alt_ranges[rpIdDw];
+				const auto &range = cfg.alignment_y_alt_ranges[rpIdUp];
 				if (trUp.getX() > range.x_min && trUp.getX() < range.x_max)
 				{
 					p_y_diffFN_vs_y_N->Fill(trUp.getY(), trDw.getY() - trUp.getY());
