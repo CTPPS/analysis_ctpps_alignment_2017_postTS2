@@ -41,7 +41,7 @@ int main()
 
 	vector<ArmData> armData = {
 		{ "sector 45", 2, 3, 0., 0. },
-		{ "sector 56", 102, 103, 0., 0. },
+		{ "sector 56", 102, 103, 0.2, 0.2 },
 	};
 
 	// get input
@@ -78,16 +78,16 @@ int main()
 				continue;
 			}
 
-			double p0_init = -0.3;
-			double p1_init = 0.10;
-			double p2_init = 0.07;
-			double p3_init = 3.7;
+			double p0_init = (ad.name == "sector 45") ? -1.3 : -1.2;
+			double p1_init = 0.05;
+			double p2_init = 0.05;
+			double p3_init = (rp == "N") ? 4.0 : 2.8;
 			double p4_init = (ad.name == "sector 45") ? 1.0 : 0.7;
 
 			ff->SetParameters(p0_init, p1_init, p2_init, p3_init, p4_init);
 
 			double x_min, x_max;
-			double x_range = 3.;
+			double x_range = (ad.name == "sector 45") ? 2.5 : 3.0;
 
 			x_min = ff->GetParameter(3.) - x_range; x_max = ff->GetParameter(3.) + x_range;
 			ff->FixParameter(3, p3_init);
