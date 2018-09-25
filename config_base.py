@@ -104,11 +104,11 @@ config = cms.PSet(
       ),
       rp_R_1_F = cms.PSet(
         x_min = cms.double(7.),
-        x_max = cms.double(19.),
+        x_max = cms.double(15.),
       ),
       rp_R_2_F = cms.PSet(
         x_min = cms.double(46.),
-        x_max = cms.double(57.),
+        x_max = cms.double(53.),
       )
     ),
 
