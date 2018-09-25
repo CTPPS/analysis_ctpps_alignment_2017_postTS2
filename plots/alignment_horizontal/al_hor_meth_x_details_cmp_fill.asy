@@ -21,6 +21,8 @@ rps.push("R_2_F"); rp_labels.push("R-220-fr");
 
 ySizeDef = 5cm;
 
+xTicksDef = LeftTicks(3., 1.);
+
 //----------------------------------------------------------------------------------------------------
 
 NewPad();
@@ -50,7 +52,7 @@ for (int dsi : datasets.keys)
 		draw(RootGetObject(f, p_base + "|h_test_aft"), "d0,eb", red);
 
 		//limits((2, 0), (15, 3.5), Crop);
-		xlimits(2, 15, Crop);
+		xlimits(3, 16, Crop);
 	}
 }
 

@@ -12,7 +12,7 @@ real GetMeanHorizontalAlignment(string rp)
 
 real GetMeanHorizontalRelativeAlignment(string sector)
 {
-	if (sector == "45") return 38.43;
+	if (sector == "45") return 38.44;
 	if (sector == "56") return 39.37;
 
 	return 0;
