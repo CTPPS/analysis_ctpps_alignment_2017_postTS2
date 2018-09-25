@@ -1,6 +1,8 @@
 import root;
 import pad_layout;
 
+include "../common.asy";
+
 string topDir = "../../data/phys/";
 
 include "../fills_samples.asy";
@@ -174,6 +176,9 @@ for (int si : sectors.keys)
 			}
 		}
 	}
+
+	real y_mean = GetMeanHorizontalRelativeAlignment(sectors[si]);
+	draw((-1, y_mean)--(fill_data.length, y_mean), black);
 
 	//xlimits(-1, fill_data.length, Crop);
 	limits((-1, s_y_mins[si]), (fill_data.length, s_y_maxs[si]), Crop);

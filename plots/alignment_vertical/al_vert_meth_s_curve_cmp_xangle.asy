@@ -1,6 +1,8 @@
 import root;
 import pad_layout;
 
+include "../common.asy";
+
 string topDir = "../../data/phys/";
 
 include "../fills_samples.asy";
@@ -29,7 +31,7 @@ rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(2
 
 xSizeDef = 40cm;
 
-//yTicksDef = RightTicks(0.01, 0.005);
+yTicksDef = RightTicks(0.5, 0.1);
 
 //----------------------------------------------------------------------------------------------------
 
@@ -111,6 +113,9 @@ for (int rpi : rps.keys)
 			}
 		}
 	}
+
+	real y_mean = GetMeanVerticalAlignment(rps[rpi]);
+	draw((-1, y_mean)--(fill_data.length, y_mean), black);
 
 	limits((-1, rp_y_min[rpi]), (fill_data.length, rp_y_max[rpi]), Crop);
 
