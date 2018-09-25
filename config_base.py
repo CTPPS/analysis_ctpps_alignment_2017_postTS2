@@ -131,7 +131,7 @@ config = cms.PSet(
       )
     ),
 
-    alignment_y = cms.PSet(
+    y_alignment = cms.PSet(
       rp_L_2_F = cms.PSet(
         x_min = cms.double(45.5),
         x_max = cms.double(49.),
@@ -147,6 +147,25 @@ config = cms.PSet(
       rp_R_2_F = cms.PSet(
         x_min = cms.double(45.),
         x_max = cms.double(48.),
+      )
+    ),
+
+    y_alignment_alt = cms.PSet(
+      rp_L_2_F = cms.PSet(
+        x_min = cms.double(0.),
+        x_max = cms.double(0.),
+      ),
+      rp_L_1_F = cms.PSet(
+        x_min = cms.double(8.),
+        x_max = cms.double(18.),
+      ),
+      rp_R_1_F = cms.PSet(
+        x_min = cms.double(7.3),
+        x_max = cms.double(16.),
+      ),
+      rp_R_2_F = cms.PSet(
+        x_min = cms.double(0.),
+        x_max = cms.double(0.),
       )
     )
 )

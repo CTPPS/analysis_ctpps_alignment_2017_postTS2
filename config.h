@@ -67,6 +67,7 @@ struct Config
 	map<unsigned int, SelectionRange> alignment_x_relative_ranges;
 
 	map<unsigned int, SelectionRange> alignment_y_ranges;
+	map<unsigned int, SelectionRange> alignment_y_alt_ranges;
 
 	int LoadFrom(const string &f);
 
@@ -171,11 +172,18 @@ int Config::LoadFrom(const string &f_in)
 		alignment_x_relative_ranges[p.first] = SelectionRange(ps.getParameter<double>("x_min"), ps.getParameter<double>("x_max"));
 	}
 
-	const auto &c_ay = config.getParameter<edm::ParameterSet>("alignment_y");
+	const auto &c_ay = config.getParameter<edm::ParameterSet>("y_alignment");
 	for (const auto &p : rp_tags)
 	{
 		const auto &ps = c_ay.getParameter<edm::ParameterSet>("rp_" + p.second);
 		alignment_y_ranges[p.first] = SelectionRange(ps.getParameter<double>("x_min"), ps.getParameter<double>("x_max"));
+	}
+
+	const auto &c_aya = config.getParameter<edm::ParameterSet>("y_alignment_alt");
+	for (const auto &p : rp_tags)
+	{
+		const auto &ps = c_aya.getParameter<edm::ParameterSet>("rp_" + p.second);
+		alignment_y_alt_ranges[p.first] = SelectionRange(ps.getParameter<double>("x_min"), ps.getParameter<double>("x_max"));
 	}
 
 	return 0;
@@ -245,6 +253,10 @@ void Config::Print(bool print_input_files) const
 
 	printf("\n* alignment_y\n");
 	for (const auto &p : alignment_y_ranges)
+		printf("    RP %u: x_min = %.3f, x_max = %.3f\n", p.first, p.second.x_min, p.second.x_max);
+
+	printf("\n* alignment_y_alt\n");
+	for (const auto &p : alignment_y_alt_ranges)
 		printf("    RP %u: x_min = %.3f, x_max = %.3f\n", p.first, p.second.x_min, p.second.x_max);
 }
 
