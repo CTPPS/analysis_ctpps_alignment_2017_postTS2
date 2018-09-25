@@ -14,21 +14,24 @@ sample_labels.push("ZeroBias"); sample_pens.push(blue);
 sample_labels.push("DoubleEG"); sample_pens.push(red);
 sample_labels.push("SingleMuon"); sample_pens.push(heavygreen);
 
-int xangle = 150;
-
 real sfa = 0.3;
+
+string method = "method x";
+
+int xangle = 150;
+string ref_label = "data_alig_fill_6228_xangle_150_DS1";
 
 int rp_ids[];
 string rps[], rp_labels[];
-real rp_y_min[], rp_y_max[];
-rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr"); rp_y_min.push(2); rp_y_max.push(4);
-rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr"); rp_y_min.push(3); rp_y_max.push(5);
-rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_y_min.push(3); rp_y_max.push(5);
-rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(2); rp_y_max.push(4);
+real rp_shift_m[];
+rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr"); rp_shift_m.push(-42.05);
+rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr"); rp_shift_m.push(-3.7);
+rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_shift_m.push(-2.75);
+rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_shift_m.push(-42.05);
+
+yTicksDef = RightTicks(0.2, 0.1);
 
 xSizeDef = 40cm;
-
-//yTicksDef = RightTicks(0.01, 0.005);
 
 //----------------------------------------------------------------------------------------------------
 
@@ -48,7 +51,8 @@ xTicksDef = LeftTicks(rotate(90)*Label(""), TickLabels, Step=1, step=0);
 
 NewPad(false, 1, 1);
 
-AddToLegend(format("xangle = %u", xangle));
+AddToLegend("(" + method + ")");
+AddToLegend(format("(xangle %u)", xangle));
 
 for (int sai : sample_labels.keys)
 {
@@ -63,11 +67,21 @@ for (int rpi : rps.keys)
 {
 	write(rps[rpi]);
 
-	//if (rpi == 2)
-		NewRow();
+	NewRow();
 
-	NewPad("fill", "vertical shift $\ung{mm}$");
+	NewPad("fill", "horizontal shift$\ung{mm}$");
 
+	if (rp_shift_m[rpi] != 0)
+	{
+		real sh = rp_shift_m[rpi], unc = 0.15;
+		real fill_min = -1, fill_max = fill_data.length;
+		draw((fill_min, sh+unc)--(fill_max, sh+unc), black+dashed);
+		draw((fill_min, sh)--(fill_max, sh), black+1pt);
+		draw((fill_min, sh-unc)--(fill_max, sh-unc), black+dashed);
+		draw((fill_max, sh-2*unc), invisible);
+		draw((fill_max, sh+2*unc), invisible);
+	}
+	
 	for (int fdi : fill_data.keys)
 	{
 		write(format("    %i", fill_data[fdi].fill));
@@ -85,36 +99,36 @@ for (int rpi : rps.keys)
 			write("        " + dataset);
 	
 			mark m = mCi+3pt;
-
+	
 			for (int sai : sample_labels.keys)
 			{
-				string f = topDir + dataset + "/" + sample_labels[sai] + "/y_alignment.root";
-
-				RootObject results = RootGetObject(f, rps[rpi] + "/g_results", error = false);
-		
-				if (!results.valid)
+				string f = topDir + dataset + "/" + sample_labels[sai] + "/match.root";	
+				RootObject obj = RootGetObject(f, ref_label + "/" + rps[rpi] + "/" + method + "/g_results", error = false);
+	
+				if (!obj.valid)
 					continue;
-		
-				real x = fdi;
+	
+				real ax[] = { 0. };
+				real ay[] = { 0. };
+				obj.vExec("GetPoint", 0, ax, ay); real bsh = ay[0];
+				obj.vExec("GetPoint", 1, ax, ay); real bsh_unc = ay[0];
 
-				real ax[] = {0.};
-				real ay[] = {0.};
-				results.vExec("GetPoint", 0, ax, ay); real sh_x = ax[0];
-				results.vExec("GetPoint", 1, ax, ay); real a = ax[0], a_unc = ay[0];
-				results.vExec("GetPoint", 2, ax, ay); real b = ax[0], b_unc = ay[0];
-				results.vExec("GetPoint", 3, ax, ay); real b_fs = ax[0], b_fs_unc = ay[0];
+				real x = fdi + sai * sfa / (sample_labels.length - 1) - sfa/2;
 
+				bool pointValid = (bsh == bsh && bsh_unc == bsh_unc && fabs(bsh) > 0.01);
+	
 				pen p = sample_pens[sai];
-
+	
+				if (pointValid)
 				{
-					draw((x, b), m + p);
-					draw((x, b - b_unc)--(x, b + b_unc), p);
+					draw((x, bsh), m + p);
+					draw((x, bsh-bsh_unc)--(x, bsh+bsh_unc), p);
 				}
 			}
 		}
 	}
 
-	limits((-1, rp_y_min[rpi]), (fill_data.length, rp_y_max[rpi]), Crop);
+	xlimits(-1, fill_data.length, Crop);
 
 	AttachLegend("{\SetFontSizesXX " + rp_labels[rpi] + "}");
 }

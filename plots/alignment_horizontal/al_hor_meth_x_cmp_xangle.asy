@@ -10,13 +10,14 @@ InitDataSets();
 
 string sample = "ZeroBias";
 
-string method = "method y";
+string method = "method x";
 
 int xangles[];
 string xangle_refs[];
 pen xangle_pens[];
-xangles.push(120); xangle_refs.push("data_alig_fill_5685_xangle_120_DS1"); xangle_pens.push(blue);
-xangles.push(150); xangle_refs.push("data_alig_fill_5685_xangle_150_DS1"); xangle_pens.push(red);
+xangles.push(110); xangle_refs.push("data_alig_fill_6228_xangle_110_DS1"); xangle_pens.push(blue);
+xangles.push(130); xangle_refs.push("data_alig_fill_6228_xangle_130_DS1"); xangle_pens.push(red);
+xangles.push(150); xangle_refs.push("data_alig_fill_6228_xangle_150_DS1"); xangle_pens.push(heavygreen);
 
 real xfa = 0.3;
 

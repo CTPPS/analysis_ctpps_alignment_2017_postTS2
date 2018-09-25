@@ -21,10 +21,10 @@ real sfa = 0.3;
 int rp_ids[];
 string rps[], rp_labels[], rp_dirs[];
 real rp_y_min[], rp_y_max[];
-rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr"); rp_y_min.push(3); rp_y_max.push(4); rp_dirs.push("sector 45/F");
-rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr"); rp_y_min.push(3); rp_y_max.push(4); rp_dirs.push("sector 45/N");
-rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_y_min.push(3); rp_y_max.push(4); rp_dirs.push("sector 56/N");
-rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(3); rp_y_max.push(4); rp_dirs.push("sector 56/F");
+rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr"); rp_y_min.push(2); rp_y_max.push(4); rp_dirs.push("sector 45/F");
+rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr"); rp_y_min.push(3); rp_y_max.push(5); rp_dirs.push("sector 45/N");
+rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_y_min.push(3); rp_y_max.push(5); rp_dirs.push("sector 56/N");
+rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(2); rp_y_max.push(4); rp_dirs.push("sector 56/F");
 
 xSizeDef = 40cm;
 
@@ -90,20 +90,22 @@ for (int rpi : rps.keys)
 			{
 				string f = topDir + dataset + "/" + sample_labels[sai] + "/y_alignment_alt.root";
 
-				RootObject fit = RootGetObject(f, rp_dirs[rpi] + "/p_y_diffFN_vs_y|ff", error=false);
+				RootObject results = RootGetObject(f, rp_dirs[rpi] + "/g_results", error=false);
 		
-				if (!fit.valid)
+				if (!results.valid)
 					continue;
 		
-				real x = fdi;
-				real p3 = fit.rExec("GetParameter", 3);
-				real p3_unc = fit.rExec("GetParError", 3);
+				real ax[] = {0.};
+				real ay[] = {0.};
+				results.vExec("GetPoint", 2, ax, ay); real sh_y = ax[0], sh_y_unc = ay[0];
 
+				real x = fdi;
 				pen p = sample_pens[sai];
 
+				if (sh_y_unc > 0 && sh_y_unc < 1)
 				{
-					draw((x, p3), m + p);
-					draw((x, p3 - p3_unc)--(x, p3 + p3_unc), p);
+					draw((x, sh_y), m + p);
+					draw((x, sh_y - sh_y_unc)--(x, sh_y + sh_y_unc), p);
 				}
 			}
 		}

@@ -36,11 +36,11 @@ for (int dsi : datasets.keys)
 
 	for (int rpi : rps.keys)
 	{
-		NewPad("$x\ung{mm}$", "std.~dev.~of $y\ung{mm}$");
-		currentpad.yTicks = RightTicks(0.5, 0.1);
+		NewPad("$x\ung{mm}$", "entries (normalised)");
+		//currentpad.yTicks = RightTicks(0.5, 0.1);
 
 		string f = topDir + dataset+"/match.root";
-		string p_base = reference + "/" + rps[rpi] + "/method y/c_cmp";
+		string p_base = reference + "/" + rps[rpi] + "/method x/c_cmp";
 		RootObject obj_base = RootGetObject(f, p_base, error=false);
 		if (!obj_base.valid)
 			continue;
@@ -49,7 +49,8 @@ for (int dsi : datasets.keys)
 		draw(RootGetObject(f, p_base + "|h_test_bef"), "d0,eb", blue);
 		draw(RootGetObject(f, p_base + "|h_test_aft"), "d0,eb", red);
 
-		limits((2, 0), (15, 3.5), Crop);
+		//limits((2, 0), (15, 3.5), Crop);
+		xlimits(2, 15, Crop);
 	}
 }
 

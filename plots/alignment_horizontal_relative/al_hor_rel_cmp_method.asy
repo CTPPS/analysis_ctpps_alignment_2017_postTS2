@@ -14,7 +14,7 @@ real mfa = 0.3;
 
 string abs_methods[];
 pen am_pens[];
-//abs_methods.push("method x"); am_pens.push(blue);
+abs_methods.push("method x"); am_pens.push(blue);
 abs_methods.push("method y"); am_pens.push(red);
 abs_methods.push("method o"); am_pens.push(heavygreen);
 
@@ -101,8 +101,8 @@ for (int si : sectors.keys)
 				if (method == "method x" || method == "method y")
 				{
 					string f = topDir + dataset + "/" + sample + "/match.root";	
-					obj_N = RootGetObject(f, ref_label + "/" + s_rp_Ns[si] + "/method y/g_results", error = false);
-					obj_F = RootGetObject(f, ref_label + "/" + s_rp_Fs[si] + "/method y/g_results", error = false);
+					obj_N = RootGetObject(f, ref_label + "/" + s_rp_Ns[si] + "/" + method + "/g_results", error = false);
+					obj_F = RootGetObject(f, ref_label + "/" + s_rp_Fs[si] + "/" + method + "/g_results", error = false);
 				}
 
 				if (method == "method o")
