@@ -458,8 +458,8 @@ int main()
 	}
 
 	// TODO
-	if (cfg.input_files.size() > 15)
-		cfg.input_files.resize(15);
+	//if (cfg.input_files.size() > 15)
+	//	cfg.input_files.resize(15);
 
 	printf("-------------------- config ----------------------\n");
 	cfg.Print(true);
