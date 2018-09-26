@@ -87,20 +87,20 @@ config = cms.PSet(
 
     x_alignment_meth_x = cms.PSet(
       rp_L_2_F = cms.PSet(
-        x_min = cms.double(46.5),
-        x_max = cms.double(57.),
+        x_min = cms.double(52),
+        x_max = cms.double(58.),
       ),
       rp_L_1_F = cms.PSet(
-        x_min = cms.double(8.),
-        x_max = cms.double(18.),
+        x_min = cms.double(12.),
+        x_max = cms.double(19.),
       ),
       rp_R_1_F = cms.PSet(
         x_min = cms.double(7.5),
         x_max = cms.double(18.),
       ),
       rp_R_2_F = cms.PSet(
-        x_min = cms.double(47.),
-        x_max = cms.double(57.),
+        x_min = cms.double(52.),
+        x_max = cms.double(58.),
       )
     ),
 

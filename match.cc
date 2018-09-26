@@ -394,36 +394,6 @@ void DoMatchMethodY(TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref,
 }
 
 //----------------------------------------------------------------------------------------------------
-
-void DoMatch(unsigned int rpId,
-		TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref, const SelectionRange &r_ref,
-		double sh_min, double sh_max,
-		double &r_method_x, double &r_method_y)
-{
-	TDirectory *d_top = gDirectory;
-
-	// method x
-	SelectionRange r_test_x;
-	int bin_number = 140;
-	// TODO
-        if( rpId == 3) {r_test_x.x_min = 12.; r_test_x.x_max=19.;}
-        else if( rpId == 23) {r_test_x.x_min = 52.; r_test_x.x_max = 58.; bin_number = 98;}
-        else if( rpId == 123) {r_test_x.x_min = 52.; r_test_x.x_max = 58.; bin_number = 98;}
-        else { r_test_x = r_test;}
-	
-	gDirectory = d_top->mkdir("method x");
-	printf("    method x\n");
-	DoMatchMethodX(g_test, r_test_x, g_ref, r_ref, sh_min, sh_max, r_method_x, bin_number);
-	
-	// method y
-	gDirectory = d_top->mkdir("method y");
-	printf("    method y\n");
-	DoMatchMethodY(g_test, r_test, g_ref, r_ref, sh_min, sh_max, r_method_y);
-
-	gDirectory = d_top;
-}
-
-//----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 
 int main()
@@ -440,7 +410,6 @@ int main()
 	printf("--------------------------------------------------\n");
 
 	// list of RPs and their settings
-	// TODO: remove unused data?
 	struct RPData
 	{
 		string name;
@@ -506,17 +475,32 @@ int main()
 				continue;
 			}
 
-			gDirectory = rp_dir;
-			double r_method_x = 0., r_method_y = 0.;
 			const auto &shift_range = cfg.matching_shift_ranges[rpd.id];
-			DoMatch(rpd.id,
-				// TODO: separate method x and y
-				g_test, cfg.alignment_x_meth_x_ranges[rpd.id],
-				g_ref, cfg_ref.alignment_x_meth_x_ranges[rpd.id],
-				shift_range.x_min, shift_range.x_max,
-				r_method_x, r_method_y);
-		
+
+			// run method x
+			gDirectory = rp_dir->mkdir("method x");
+			printf("    method x\n");
+
+			const auto &range_test_x = cfg.alignment_x_meth_x_ranges[rpd.id];
+			const auto &range_ref_x = cfg_ref.alignment_x_meth_x_ranges[rpd.id];
+
+			const unsigned int bin_number = (rpd.id == 23 || rpd.id == 123) ? 98 : 140;
+
+			double r_method_x = 0.;
+			DoMatchMethodX(g_test, range_test_x, g_ref, range_ref_x, shift_range.x_min, shift_range.x_max, r_method_x, bin_number);
+
 			results[ref + ", method x"][rpd.id] = AlignmentResult(r_method_x);
+
+			// run method y
+			gDirectory = rp_dir->mkdir("method y");
+			printf("    method y\n");
+
+			const auto &range_test_y = cfg.alignment_x_meth_y_ranges[rpd.id];
+			const auto &range_ref_y = cfg_ref.alignment_x_meth_y_ranges[rpd.id];
+
+			double r_method_y = 0.;
+			DoMatchMethodY(g_test, range_test_y, g_ref, range_ref_y, shift_range.x_min, shift_range.x_max, r_method_y);
+
 			results[ref + ", method y"][rpd.id] = AlignmentResult(r_method_y);
 		}
 		
