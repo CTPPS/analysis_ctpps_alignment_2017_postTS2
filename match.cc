@@ -400,12 +400,12 @@ void DoMatch(unsigned int rpId,
 		double sh_min, double sh_max,
 		double &r_method_x, double &r_method_y)
 {
-
-	int bin_number = 140;
 	TDirectory *d_top = gDirectory;
 
 	// method x
 	SelectionRange r_test_x;
+	int bin_number = 140;
+	// TODO
         if( rpId == 3) {r_test_x.x_min = 12.; r_test_x.x_max=19.;}
         else if( rpId == 23) {r_test_x.x_min = 52.; r_test_x.x_max = 58.; bin_number = 98;}
         else if( rpId == 123) {r_test_x.x_min = 52.; r_test_x.x_max = 58.; bin_number = 98;}
@@ -465,7 +465,7 @@ int main()
 	AlignmentResultsCollection results;
 
 	// processing
-	for (auto ref : cfg.matching_1d_reference_datasets)
+	for (auto ref : cfg.matching_reference_datasets)
 	{
 		if (ref == "default")
 		{
@@ -508,10 +508,11 @@ int main()
 
 			gDirectory = rp_dir;
 			double r_method_x = 0., r_method_y = 0.;
-			const auto &shift_range = cfg.matching_1d_shift_ranges[rpd.id];
+			const auto &shift_range = cfg.matching_shift_ranges[rpd.id];
 			DoMatch(rpd.id,
-				g_test, cfg.matching_1d_ranges[rpd.id],
-				g_ref, cfg_ref.matching_1d_ranges[rpd.id],
+				// TODO: separate method x and y
+				g_test, cfg.alignment_x_meth_x_ranges[rpd.id],
+				g_ref, cfg_ref.alignment_x_meth_x_ranges[rpd.id],
 				shift_range.x_min, shift_range.x_max,
 				r_method_x, r_method_y);
 		

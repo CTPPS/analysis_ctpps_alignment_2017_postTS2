@@ -281,7 +281,7 @@ int main()
 	AlignmentResultsCollection results;
 
 	// processing
-	for (auto ref : cfg.matching_1d_reference_datasets)
+	for (auto ref : cfg.matching_reference_datasets)
 	{
 		if (ref == "default")
 		{
@@ -323,7 +323,7 @@ int main()
 			g_test->Write("g_test");
 
 			// do match
-			const auto &shift_range = cfg.matching_1d_shift_ranges[rpd.id];
+			const auto &shift_range = cfg.matching_shift_ranges[rpd.id];
 			double sh=0., sh_unc=0.;
 			DoMatch(g_ref, g_test,
 				cfg_ref.alignment_x_meth_o_ranges[rpd.id], cfg.alignment_x_meth_o_ranges[rpd.id],

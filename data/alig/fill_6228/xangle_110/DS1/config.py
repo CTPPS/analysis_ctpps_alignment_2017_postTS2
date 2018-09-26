@@ -31,17 +31,32 @@ config.sector_56.nr_x_slice_max = 15
 config.sector_56.fr_x_slice_min = 2
 config.sector_56.fr_x_slice_max = 15
 
-config.matching_1d.rp_L_2_F.x_min = 3
-config.matching_1d.rp_L_2_F.x_max = 15
 
-config.matching_1d.rp_L_1_F.x_min = 3
-config.matching_1d.rp_L_1_F.x_max = 15
+config.x_alignment_meth_x.rp_L_2_F.x_min = 3
+config.x_alignment_meth_x.rp_L_2_F.x_max = 15
 
-config.matching_1d.rp_R_1_F.x_min = 2
-config.matching_1d.rp_R_1_F.x_max = 14
+config.x_alignment_meth_x.rp_L_1_F.x_min = 3
+config.x_alignment_meth_x.rp_L_1_F.x_max = 15
 
-config.matching_1d.rp_R_2_F.x_min = 2
-config.matching_1d.rp_R_2_F.x_max = 14
+config.x_alignment_meth_x.rp_R_1_F.x_min = 2
+config.x_alignment_meth_x.rp_R_1_F.x_max = 14
+
+config.x_alignment_meth_x.rp_R_2_F.x_min = 2
+config.x_alignment_meth_x.rp_R_2_F.x_max = 14
+
+
+config.x_alignment_meth_y.rp_L_2_F.x_min = 3
+config.x_alignment_meth_y.rp_L_2_F.x_max = 15
+
+config.x_alignment_meth_y.rp_L_1_F.x_min = 3
+config.x_alignment_meth_y.rp_L_1_F.x_max = 15
+
+config.x_alignment_meth_y.rp_R_1_F.x_min = 2
+config.x_alignment_meth_y.rp_R_1_F.x_max = 14
+
+config.x_alignment_meth_y.rp_R_2_F.x_min = 2
+config.x_alignment_meth_y.rp_R_2_F.x_max = 14
+
 
 config.x_alignment_meth_o.rp_L_2_F.x_min = 7.
 config.x_alignment_meth_o.rp_L_2_F.x_max = 15.
