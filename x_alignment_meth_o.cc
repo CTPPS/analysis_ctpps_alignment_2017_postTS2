@@ -331,7 +331,7 @@ int main()
 
 			// save results
 			if (r == 0)
-				results[ref + ", method o"][rpd.id] = AlignmentResult(sh, sh_unc);
+				results["x_alignment_meth_o"][rpd.id] = AlignmentResult(sh, sh_unc);
 		}
 		
 		delete f_ref;
