@@ -166,3 +166,13 @@ void InitFillsRuns()
 		fills_reference[fill] = ref;
 	}
 }
+
+//----------------------------------------------------------------------------------------------------
+
+void PrintFillRunMapping()
+{
+	for (const auto &p : fills_runs)
+	{
+		printf("fillInfoCollection.push_back(FillInfo(%u, false, %u, %u, \"fill %u\"));\n", p.first, p.second.front(), p.second.back(), p.first);
+	}
+}

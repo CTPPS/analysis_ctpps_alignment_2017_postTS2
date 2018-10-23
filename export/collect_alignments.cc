@@ -19,6 +19,7 @@ int main()
 {
 	// initialisation
 	InitFillsRuns();
+	//PrintFillRunMapping();
 
 	vector<string> xangles = {
 		"xangle_150",
