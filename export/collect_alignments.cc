@@ -130,7 +130,8 @@ int main()
 					d.sw_x_meth_o += w;
 					d.sxw_x_meth_o += rit_x_method_o->second.sh_x * w;
 
-					w = 1. / pow(rit_x_rel->second.sh_x_unc, 2.);
+					//w = 1. / pow(rit_x_rel->second.sh_x_unc, 2.);
+					w = 1. / pow(0.010, 2.);
 					d.sw_x_rel += w;
 					d.sxw_x_rel += rit_x_rel->second.sh_x * w;
 
@@ -174,7 +175,8 @@ int main()
 			const double de_x_F = d_F.sxw_x_meth_o / d_F.sw_x_meth_o;
 
 			const double b = d_N.sxw_x_rel / d_N.sw_x_rel - d_F.sxw_x_rel / d_F.sw_x_rel;
-			const double x_corr_rel = b - de_x_F + de_x_N;
+			const double x_corr_rel = b + de_x_F - de_x_N;
+
 
 			AlignmentResult ar_N(de_x_N + x_corr_rel/2., 150E-3, d_N.sxw_y_meth_s / d_N.sw_y_meth_s, 150E-3);
 			AlignmentResult ar_F(de_x_F - x_corr_rel/2., 150E-3, d_F.sxw_y_meth_s / d_F.sw_y_meth_s, 150E-3);
