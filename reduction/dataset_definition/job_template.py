@@ -20,6 +20,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 # data source
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(),
+  skipBadFiles = cms.untracked.bool(True),
   dropDescendantsOfDroppedBranches = cms.untracked.bool(False),
   inputCommands = cms.untracked.vstring(
     'drop *',

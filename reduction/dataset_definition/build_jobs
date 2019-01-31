@@ -1,9 +1,9 @@
 #!/bin/bash
 
 streams=(
-	"SingleMuon"
+	#"SingleMuon"
 	"DoubleEG"
-	"ZeroBias"
+	#"ZeroBias"
 )
 
 dataset_exts=(
@@ -183,6 +183,11 @@ function ProcessOne()
 		MakeInputFiles
 	fi
 
+	if [ ! -s "$dir_out/input_files" ]
+	then
+		echo "WARNING: $dir_out/input_files is empty."
+	fi
+
 	# process input files
 	(
 		echo "def AddFiles(source):"
@@ -225,7 +230,8 @@ do
 	xangle=${xangle#xangle}
 
 	# skip data that cannot be matched to corresponding data in the alignment run
-	if [ "$xangle" -ne "150" -a "$xangle" -ne "130" -a "$xangle" -ne "110" ]
+	#if [ "$xangle" -ne "150" -a "$xangle" -ne "130" -a "$xangle" -ne "110" ]
+	if [ "$xangle" -ne "140" ]
 	then
 		echo "    skip"
 		continue
