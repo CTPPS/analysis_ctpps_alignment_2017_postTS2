@@ -1,11 +1,11 @@
 import root;
 import pad_layout;
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
-string reference = "data_alig_fill_6228_xangle_150_DS1";
+string reference = "data_alig-version7_fill_6228_xangle_150_DS1";
 
-string dataset = "fill_6287/xangle_150/DoubleEG";
+string dataset = "fill_6287/xangle_150/ALL";
 
 string rps[], rp_labels[];
 rps.push("L_2_F"); rp_labels.push("L-220-fr");
@@ -93,4 +93,4 @@ for (int rpi : rps.keys)
 	AttachLegend();
 }
 
-GShipout(hSkip=1mm, vSkip=1mm);
+GShipout("al_hor_meth_x_details", hSkip=1mm, vSkip=1mm);

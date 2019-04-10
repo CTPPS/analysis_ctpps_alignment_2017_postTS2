@@ -3,14 +3,14 @@ import pad_layout;
 
 include "../common.asy";
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 include "../fills_samples.asy";
 InitDataSets();
 
 //----------------------------------------------------------------------------------------------------
 
-string sample = "DoubleEG";
+string sample = "ALL";
 
 real mfa = 0.3;
 
@@ -21,7 +21,7 @@ methods.push("method y"); m_pens.push(red);
 methods.push("method o"); m_pens.push(heavygreen);
 
 int xangle = 150;
-string ref_label = "data_alig_fill_6228_xangle_150_DS1";
+string ref_label = "data_alig-version7_fill_6228_xangle_150_DS1";
 
 int rp_ids[];
 string rps[], rp_labels[];

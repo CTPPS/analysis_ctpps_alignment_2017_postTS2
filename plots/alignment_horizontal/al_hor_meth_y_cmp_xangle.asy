@@ -3,23 +3,23 @@ import pad_layout;
 
 include "../common.asy";
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 include "../fills_samples.asy";
 InitDataSets();
 
 //----------------------------------------------------------------------------------------------------
 
-string sample = "ZeroBias";
+string sample = "ALL";
 
 string method = "method y";
 
 int xangles[];
 string xangle_refs[];
 pen xangle_pens[];
-xangles.push(110); xangle_refs.push("data_alig_fill_6228_xangle_110_DS1"); xangle_pens.push(blue);
-xangles.push(130); xangle_refs.push("data_alig_fill_6228_xangle_130_DS1"); xangle_pens.push(red);
-xangles.push(150); xangle_refs.push("data_alig_fill_6228_xangle_150_DS1"); xangle_pens.push(heavygreen);
+xangles.push(110); xangle_refs.push("data_alig-version7_fill_6228_xangle_110_DS1"); xangle_pens.push(blue);
+xangles.push(130); xangle_refs.push("data_alig-version7_fill_6228_xangle_130_DS1"); xangle_pens.push(red);
+xangles.push(150); xangle_refs.push("data_alig-version7_fill_6228_xangle_150_DS1"); xangle_pens.push(heavygreen);
 
 real xfa = 0.3;
 

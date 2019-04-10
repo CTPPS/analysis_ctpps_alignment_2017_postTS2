@@ -1,11 +1,11 @@
 void InitStandardDatasets(string datasets[])
 {
 	datasets.delete();
-	datasets.push("fill_6239/xangle_150/DoubleEG");
-	datasets.push("fill_6268/xangle_150/DoubleEG");
-	datasets.push("fill_6287/xangle_150/DoubleEG");
-	datasets.push("fill_6323/xangle_150/DoubleEG");
-	datasets.push("fill_6371/xangle_150/DoubleEG");
+	datasets.push("fill_6239/xangle_150/ALL");
+	datasets.push("fill_6268/xangle_150/ALL");
+	datasets.push("fill_6287/xangle_150/ALL");
+	datasets.push("fill_6323/xangle_150/ALL");
+	datasets.push("fill_6371/xangle_150/ALL");
 }
 
 //----------------------------------------------------------------------------------------------------

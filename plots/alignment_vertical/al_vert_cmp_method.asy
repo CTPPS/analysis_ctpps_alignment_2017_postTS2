@@ -3,7 +3,7 @@ import pad_layout;
 
 include "../common.asy";
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 include "../fills_samples.asy";
 InitDataSets();
@@ -13,7 +13,8 @@ InitDataSets();
 pen p_meth_fit = red;
 pen p_meth_s_curve = blue;
 
-string sample = "DoubleEG";
+string sample = "ALL";
+//string sample = "DoubleEG";
 //string sample = "SingleMuon";
 //string sample = "ZeroBias";
 

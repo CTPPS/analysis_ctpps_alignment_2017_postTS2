@@ -1,7 +1,7 @@
 import root;
 import pad_layout;
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 include "../fills_samples.asy";
 InitDataSets();
@@ -10,9 +10,10 @@ InitDataSets();
 
 string sample_labels[];
 pen sample_pens[];
-sample_labels.push("ZeroBias"); sample_pens.push(blue);
-sample_labels.push("DoubleEG"); sample_pens.push(red);
-sample_labels.push("SingleMuon"); sample_pens.push(heavygreen);
+//sample_labels.push("ZeroBias"); sample_pens.push(blue);
+//sample_labels.push("DoubleEG"); sample_pens.push(magenta);
+//sample_labels.push("SingleMuon"); sample_pens.push(heavygreen);
+sample_labels.push("ALL"); sample_pens.push(red);
 
 int xangle = 150;
 

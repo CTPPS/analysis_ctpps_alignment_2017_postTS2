@@ -3,9 +3,9 @@ import pad_layout;
 
 include "../common.asy";
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
-string reference = "data_alig_fill_6228_xangle_150_DS1";
+string reference = "data_alig-version7_fill_6228_xangle_150_DS1";
 
 string datasets[];
 InitStandardDatasets(datasets);
@@ -50,4 +50,4 @@ for (int dsi : datasets.keys)
 	}
 }
 
-GShipout(hSkip=1mm, vSkip=1mm);
+GShipout("al_hor_meth_y_details_cmp_fill", hSkip=1mm, vSkip=1mm);

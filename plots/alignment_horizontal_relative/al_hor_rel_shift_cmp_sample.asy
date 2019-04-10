@@ -3,7 +3,7 @@ import pad_layout;
 
 include "../common.asy";
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 include "../fills_samples.asy";
 InitDataSets();
@@ -122,4 +122,4 @@ for (int si : sectors.keys)
 
 //----------------------------------------------------------------------------------------------------
 
-GShipout(hSkip=5mm, vSkip=1mm);
+GShipout("al_hor_rel_shift_cmp_sample", hSkip=5mm, vSkip=1mm);

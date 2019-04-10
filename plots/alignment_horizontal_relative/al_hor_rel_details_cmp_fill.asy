@@ -1,14 +1,14 @@
 import root;
 import pad_layout;
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 string datasets[] = {
-	"fill_6239/xangle_150/DoubleEG",
-	"fill_6268/xangle_150/DoubleEG",
-	"fill_6287/xangle_150/DoubleEG",
-	"fill_6323/xangle_150/DoubleEG",
-	"fill_6371/xangle_150/DoubleEG",
+	"fill_6239/xangle_150/ALL",
+	"fill_6268/xangle_150/ALL",
+	"fill_6287/xangle_150/ALL",
+	"fill_6323/xangle_150/ALL",
+	"fill_6371/xangle_150/ALL",
 };
 
 string sectors[], s_labels[];
@@ -62,4 +62,4 @@ for (int dsi : datasets.keys)
 	}
 }
 
-GShipout(hSkip=1mm, vSkip=1mm);
+GShipout("al_hor_rel_details_cmp_fill", hSkip=1mm, vSkip=1mm);

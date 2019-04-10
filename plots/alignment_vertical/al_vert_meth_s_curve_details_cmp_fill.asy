@@ -1,7 +1,7 @@
 import root;
 import pad_layout;
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 string plots[], p_arms[], p_rps[], p_x_axis[], p_y_axis[];
 plots.push("sector 45/N/p_y_diffFN_vs_y"); p_arms.push("sector 45"); p_rps.push("near"); p_x_axis.push("y_{LN}\ung{mm}"); p_y_axis.push("y_{LF} - y_{LN}\ung{mm}");
@@ -15,20 +15,12 @@ xTicksDef = LeftTicks(1., 0.5);
 yTicksDef = RightTicks(0.1, 0.05);
 
 string datasets[] = {
-	"fill_6239/xangle_150/DoubleEG",
-	"fill_6268/xangle_150/DoubleEG",
-	"fill_6287/xangle_150/DoubleEG",
-	"fill_6323/xangle_150/DoubleEG",
-	"fill_6371/xangle_150/DoubleEG",
+	"fill_6239/xangle_150/ALL",
+	"fill_6268/xangle_150/ALL",
+	"fill_6287/xangle_150/ALL",
+	"fill_6323/xangle_150/ALL",
+	"fill_6371/xangle_150/ALL",
 };
-
-// TODO
-/*
-string datasets[] = {
-	"fill_6263/xangle_150/DoubleEG",
-	"fill_6266/xangle_150/DoubleEG",
-};
-*/
 
 //----------------------------------------------------------------------------------------------------
 
@@ -74,4 +66,4 @@ for (int dsi : datasets.keys)
 	}
 }
 
-GShipout(hSkip=0mm, vSkip=0mm);
+GShipout("al_vert_meth_s_curve_details_cmp_fill", hSkip=0mm, vSkip=0mm);
