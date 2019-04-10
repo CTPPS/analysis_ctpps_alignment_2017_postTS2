@@ -286,7 +286,7 @@ int main()
 		if (ref == "default")
 		{
 			char buf[100];
-			sprintf(buf, "data/alig/fill_6228/xangle_%u/DS1", cfg.xangle);
+			sprintf(buf, "data/alig-version7/fill_6228/xangle_%u/DS1", cfg.xangle);
 			ref = buf;
 		}
 
