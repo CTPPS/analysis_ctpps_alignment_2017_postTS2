@@ -18,8 +18,14 @@ ANALYSIS
 
 2) Horizontal alignment
 
-2.1) Run matching (methods "x" and "y", wrt. alig/fill_6228)
+2.1) Run matching (methods "x" and "y")
 	./run match data/phys/fill_*/xangle*/*/ -submit
+
+2.1) Method "O"
+	./run x_alignment_meth_o data/phys/fill_*/xangle*/*/ -submit
+
+2.1) Relative alignment
+	./run x_alignment_meth_o data/phys/fill_*/xangle*/*/ -submit
 
 3) Vertical and tilt alignment
 
