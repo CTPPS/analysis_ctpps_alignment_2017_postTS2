@@ -13,7 +13,7 @@ cuts.push("cut_h"); c_labels.push("cut h"); c_ranges.push(0.4); c_x_labels.push(
 cuts.push("cut_v"); c_labels.push("cut v"); c_ranges.push(0.2); c_x_labels.push("$y(\hbox{210-fr})\ung{mm}$"); c_y_labels.push("$y(\hbox{220-fr})\ung{mm}$");
 
 string datasets[] = {
-	"data/phys/fill_6348/xangle_150/SingleMuon",
+	"fill_6348/xangle_150/SingleMuon",
 };
 
 TH2_palette = Gradient(blue, heavygreen, yellow, red);
@@ -24,7 +24,7 @@ for (int dsi : datasets.keys)
 {
 	NewRow();
 
-	string f = topDir + datasets[dsi] + "/distributions.root";
+	string f = topDir + "data/phys/" + datasets[dsi] + "/distributions.root";
 
 	for (int sci : sectors.keys)
 	{
@@ -39,7 +39,6 @@ for (int dsi : datasets.keys)
 			//TH1_x_min = -r;
 			//TH1_x_max = +r;
 
-			string f = topDir + datasets[dsi] + "/distributions.root";
 			string obj_path_base = sectors[sci] + "/cuts/" + cuts[cti] + "/canvas_before";
 
 			RootObject hist = RootGetObject(f, obj_path_base + "#0");
