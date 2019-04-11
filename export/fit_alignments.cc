@@ -1,16 +1,33 @@
 #include "../alignment_classes.h"
 #include "fills_runs.h"
 
+#include "TGraphErrors.h"
+#include "TFile.h"
+#include "TF1.h"
+
 using namespace std;
 
 //----------------------------------------------------------------------------------------------------
 
-struct RPData
+struct RPGraphs
 {
-	unsigned int n = 0;
-	double sxw_x_meth_o = 0., sw_x_meth_o = 0.;
-	double sxw_x_rel = 0., sw_x_rel = 0.;
-	double sxw_y_meth_s = 0., sw_y_meth_s = 0.;
+	TGraphErrors *g_x_meth_o = NULL;
+	TGraphErrors *g_x_rel;
+	TGraphErrors *g_y_meth_s;
+
+	TF1 *f_x_meth_o;
+	TF1 *f_x_rel;
+	TF1 *f_y_meth_s;
+
+	void Init()
+	{
+		if (g_x_meth_o)
+			return;
+
+		g_x_meth_o = new TGraphErrors();
+		g_x_rel = new TGraphErrors();
+		g_y_meth_s = new TGraphErrors();
+	}
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -18,7 +35,7 @@ struct RPData
 int main()
 {
 	// initialisation
-	InitFillsRuns();
+	InitFillsRuns(false);
 	//PrintFillRunMapping();
 
 	string topDir = "../data/phys-version1";
@@ -53,17 +70,11 @@ int main()
 		rps.push_back(ad.rp_id_F);
 	}
 
-	// prepare output
-	AlignmentResultsCollection output;
+	// collect data
+	map<unsigned int, RPGraphs> rpGraphs;
 
-	// process all fills
 	for (const auto &fill : fills)
 	{
-		//printf("---------------\n");
-
-		// collect data from all xangles, datasets and RPs
-		map<unsigned int, RPData> rpData;
-
 		for (const auto &xangle : xangles)
 		{
 			for (const auto &dataset : datasets)
@@ -125,23 +136,22 @@ int main()
 						continue;
 					}
 
-					double w;
-					auto &d = rpData[rp];
+					int idx = 0;
 
-					d.n++;
+					auto &g = rpGraphs[rp];
+					g.Init();
 
-					w = 1. / pow(rit_x_method_o->second.sh_x_unc, 2.);
-					d.sw_x_meth_o += w;
-					d.sxw_x_meth_o += rit_x_method_o->second.sh_x * w;
+					idx = g.g_x_meth_o->GetN();
+					g.g_x_meth_o->SetPoint(idx, fill, rit_x_method_o->second.sh_x);
+					g.g_x_meth_o->SetPointError(idx, 0., rit_x_method_o->second.sh_x_unc);
 
-					//w = 1. / pow(rit_x_rel->second.sh_x_unc, 2.);
-					w = 1. / pow(0.010, 2.);
-					d.sw_x_rel += w;
-					d.sxw_x_rel += rit_x_rel->second.sh_x * w;
+					idx = g.g_x_rel->GetN();
+					g.g_x_rel->SetPoint(idx, fill, rit_x_rel->second.sh_x);
+					g.g_x_rel->SetPointError(idx, 0., 0.010);
 
-					w = 1. / pow(rit_y_method_s->second.sh_y_unc, 2.);
-					d.sw_y_meth_s += w;
-					d.sxw_y_meth_s += rit_y_method_s->second.sh_y * w;
+					idx = g.g_y_meth_s->GetN();
+					g.g_y_meth_s->SetPoint(idx, fill, rit_y_method_s->second.sh_y);
+					g.g_y_meth_s->SetPointError(idx, 0., rit_y_method_s->second.sh_y_unc);
 				}
 
 				if (!rpsWithMissingData.empty())
@@ -153,32 +163,40 @@ int main()
 				}
 			}
 		}
+	}
 
+	// fit graphs
+	for (auto &g : rpGraphs)
+	{
+		g.second.f_x_meth_o = new TF1("", "[0] + [1]*x");
+		g.second.g_x_meth_o->Fit(g.second.f_x_meth_o, "Q");
+
+		g.second.f_x_rel = (g.first < 100) ? new TF1("", "[0]") : new TF1("", "[0] + [1]*x");
+		g.second.g_x_rel->Fit(g.second.f_x_rel, "Q");
+
+		g.second.f_y_meth_s = new TF1("", "[0] + [1]*x");
+		g.second.g_y_meth_s->Fit(g.second.f_y_meth_s, "Q");
+	}
+
+	// prepare output
+	AlignmentResultsCollection output;
+
+	// interpolate output
+	for (const auto &fill : fills)
+	{
 		// process data from all RPs
 		AlignmentResults ars_combined;
 
 		for (const auto &ad : armData)
 		{
-			auto &d_N = rpData[ad.rp_id_N];
-			auto &d_F = rpData[ad.rp_id_F];
-
-			if (d_N.n == 0)
-			{
-				printf("ERROR: no data for RP %u in fill %u.\n", ad.rp_id_N, fill);
-				continue;
-			}
-
-			if (d_F.n == 0)
-			{
-				printf("ERROR: no data for RP %u in fill %u.\n", ad.rp_id_F, fill);
-				continue;
-			}
+			auto &d_N = rpGraphs[ad.rp_id_N];
+			auto &d_F = rpGraphs[ad.rp_id_F];
 
 			// b = mean (x_F - x_N) with no correction
-			const double de_x_N = d_N.sxw_x_meth_o / d_N.sw_x_meth_o;
-			const double de_x_F = d_F.sxw_x_meth_o / d_F.sw_x_meth_o;
+			const double de_x_N = d_N.f_x_meth_o->Eval(fill);
+			const double de_x_F = d_F.f_x_meth_o->Eval(fill);
 
-			const double b = d_N.sxw_x_rel / d_N.sw_x_rel - d_F.sxw_x_rel / d_F.sw_x_rel;
+			const double b = d_N.f_x_rel->Eval(fill) - d_F.f_x_rel->Eval(fill);
 			double x_corr_rel = b + de_x_F - de_x_N;
 
 			if (ad.name == "sector 45") x_corr_rel += 130E-3;
@@ -188,8 +206,8 @@ int main()
 			if (ad.name == "sector 45") y_corr_N += -0E-3, y_corr_F += +0E-3;
 			if (ad.name == "sector 56") y_corr_N += -53E-3, y_corr_F += +53E-3;
 
-			AlignmentResult ar_N(de_x_N + x_corr_rel/2., 150E-3, d_N.sxw_y_meth_s / d_N.sw_y_meth_s + y_corr_N, 150E-3);
-			AlignmentResult ar_F(de_x_F - x_corr_rel/2., 150E-3, d_F.sxw_y_meth_s / d_F.sw_y_meth_s + y_corr_F, 150E-3);
+			AlignmentResult ar_N(de_x_N + x_corr_rel/2., 150E-3, d_N.f_y_meth_s->Eval(fill) + y_corr_N, 150E-3);
+			AlignmentResult ar_F(de_x_F - x_corr_rel/2., 150E-3, d_F.f_y_meth_s->Eval(fill) + y_corr_F, 150E-3);
 
 			ar_N.rot_x = 3.1415927;
 			ar_N.rot_z = +0.27925268;
@@ -204,7 +222,28 @@ int main()
 	}
 
 	// save results
-	output.Write("collect_alignments.out");
+	output.Write("fit_alignments.out");
+
+	TFile *f_out = TFile::Open("fit_alignments.root", "recreate");
+
+	for (auto &g : rpGraphs)
+	{
+		char buf[100];
+		sprintf(buf, "rp %u", g.first);
+		TDirectory *d_rp = f_out->mkdir(buf);
+		gDirectory = d_rp;
+
+		g.second.g_x_meth_o->Write("g_x_meth_o");
+		//g.second.f_x_meth_o->Write("f_x_meth_o");
+
+		g.second.g_x_rel->Write("g_x_rel");
+		//g.second.f_x_rel->Write("f_x_rel");
+
+		g.second.g_y_meth_s->Write("g_y_meth_s");
+		//g.second.f_y_meth_s->Write("f_y_meth_s");
+	}
+
+	delete f_out;
 
 	// clean up
 	return 0;
