@@ -181,12 +181,12 @@ int main()
 			const double b = d_N.sxw_x_rel / d_N.sw_x_rel - d_F.sxw_x_rel / d_F.sw_x_rel;
 			double x_corr_rel = b + de_x_F - de_x_N;
 
-			if (ad.name == "sector 45") x_corr_rel += 130E-3;
-			if (ad.name == "sector 56") x_corr_rel += 110E-3;
+			if (ad.name == "sector 45") x_corr_rel += 130E-3 - 80E-3;
+			if (ad.name == "sector 56") x_corr_rel += 110E-3 - 82E-3;
 
 			double y_corr_N = 0., y_corr_F = 0.;
 			if (ad.name == "sector 45") y_corr_N += -0E-3, y_corr_F += +0E-3;
-			if (ad.name == "sector 56") y_corr_N += -53E-3, y_corr_F += +53E-3;
+			if (ad.name == "sector 56") y_corr_N += -53E-3 + 30E-3, y_corr_F += +53E-3 - 30E-3;
 
 			AlignmentResult ar_N(de_x_N + x_corr_rel/2., 150E-3, d_N.sxw_y_meth_s / d_N.sw_y_meth_s + y_corr_N, 150E-3);
 			AlignmentResult ar_F(de_x_F - x_corr_rel/2., 150E-3, d_F.sxw_y_meth_s / d_F.sw_y_meth_s + y_corr_F, 150E-3);
