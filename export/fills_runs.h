@@ -87,6 +87,7 @@ void InitFillsRuns(bool useExceptionList = true)
 	fills_runs[6370] = {306416, 306417, 306418, 306419, 306420, 306421, 306422, 306423, 306425, 306432};
 	fills_runs[6371] = {306454, 306455, 306456, 306457, 306458, 306459, 306460, 306461, 306462};
 
+	// fills to process (CMS golden & RPs inserted)
 	fills.push_back(6239);
 	fills.push_back(6240);
 	fills.push_back(6241);
@@ -178,4 +179,37 @@ void PrintFillRunMapping()
 	{
 		printf("fillInfoCollection.push_back(FillInfo(%u, false, %u, %u, \"fill %u\"));\n", p.first, p.second.front(), p.second.back(), p.first);
 	}
+}
+
+//----------------------------------------------------------------------------------------------------
+
+void GetFillList()
+{
+	std::vector<unsigned int> runs = {
+//#include "good_runs"
+	};
+
+	std::set<unsigned int> fills;
+
+	for (const auto &run : runs)
+	{
+		for (const auto &p : fills_runs)
+		{
+			bool found = false;
+			for (const auto &ref_run : p.second)
+			{
+				if (run == ref_run)
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if (found)
+				fills.insert(p.first);
+		}
+	}
+
+	for (const auto &fill : fills)
+		printf("%u\n", fill);
 }
