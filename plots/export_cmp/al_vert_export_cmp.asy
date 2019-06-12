@@ -10,17 +10,21 @@ InitDataSets();
 string files[], f_labels[];
 pen f_pens[];
 
-files.push("/afs/cern.ch/work/j/jkaspar/software/ctpps/development/ctpps_initial_proton_reconstruction_CMSSW_10_2_0/CMSSW_10_2_0/src/RecoCTPPS/ProtonReconstruction/data/alignment/2017_postTS2/collect_alignments_2018_10_25.5.out"); f_labels.push("old"); f_pens.push(blue);
-files.push("../../export/collect_alignments.out"); f_labels.push("intermediate"); f_pens.push(heavygreen);
-files.push("../../export/fit_alignments.out"); f_labels.push("new"); f_pens.push(red);
+string cmsswDir = "/afs/cern.ch/work/j/jkaspar/software/ctpps/development/ctpps_initial_proton_reconstruction_CMSSW_10_2_0/CMSSW_10_2_0/src/RecoCTPPS/ProtonReconstruction/data/alignment/2017_postTS2/";
+
+files.push(cmsswDir + "collect_alignments_2019_04_18.1.out"); f_labels.push("2019\_04\_18.1"); f_pens.push(blue);
+files.push(cmsswDir + "collect_alignments_2019_06_12.out"); f_labels.push("2019\_06\_12"); f_pens.push(red);
+
+//files.push("../../export/collect_alignments.out"); f_labels.push("intermediate"); f_pens.push(heavygreen);
+//files.push("../../export/fit_alignments.out"); f_labels.push("new"); f_pens.push(red);
 
 int rp_ids[];
 string rps[], rp_labels[], rp_dirs[];
 real rp_y_min[], rp_y_max[];
 rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr"); rp_y_min.push(2.3); rp_y_max.push(3.0); rp_dirs.push("sector 45/F");
 rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr"); rp_y_min.push(3.6); rp_y_max.push(4.3); rp_dirs.push("sector 45/N");
-rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_y_min.push(3.5); rp_y_max.push(4.2); rp_dirs.push("sector 56/N");
-rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(2.4); rp_y_max.push(3.1); rp_dirs.push("sector 56/F");
+rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_y_min.push(3.0); rp_y_max.push(4.2); rp_dirs.push("sector 56/N");
+rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(2.0); rp_y_max.push(3.1); rp_dirs.push("sector 56/F");
 
 xSizeDef = 40cm;
 

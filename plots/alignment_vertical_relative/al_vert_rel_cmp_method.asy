@@ -16,7 +16,6 @@ pen p_meth_s_curve = blue;
 string sample = "ALL";
 
 int xangle = 150;
-string ref_label = "data_alig-version7_fill_6228_xangle_150_DS1";
 
 string sectors[], s_labels[];
 real s_y_mins[], s_y_maxs[], s_y_cens[];
@@ -94,8 +93,13 @@ for (int si : sectors.keys)
 		
 				if (results_N.valid && results_F.valid)
 				{
-					results_N.vExec("GetPoint", 2, ax, ay); real b_N = ax[0], b_N_unc = ay[0];
-					results_F.vExec("GetPoint", 2, ax, ay); real b_F = ax[0], b_F_unc = ay[0];
+					// fit with slope free
+					//results_N.vExec("GetPoint", 2, ax, ay); real b_N = ax[0], b_N_unc = ay[0];
+					//results_F.vExec("GetPoint", 2, ax, ay); real b_F = ax[0], b_F_unc = ay[0];
+
+					// fit with slope fixed
+					results_N.vExec("GetPoint", 3, ax, ay); real b_N = ax[0], b_N_unc = ay[0];
+					results_F.vExec("GetPoint", 3, ax, ay); real b_F = ax[0], b_F_unc = ay[0];
 
 					real diff = b_F - b_N;
 					real diff_unc = sqrt(b_F_unc*b_F_unc + b_N_unc*b_N_unc);
