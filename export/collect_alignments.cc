@@ -232,7 +232,7 @@ int main()
 	}
 
 	// save results
-	output.Write("collect_alignments_2019_09_25.out");
+	output.Write("collect_alignments_2019_12_04.out");
 
 	// clean up
 	return 0;
