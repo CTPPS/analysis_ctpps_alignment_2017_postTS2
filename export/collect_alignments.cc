@@ -205,8 +205,8 @@ int main()
 			if (ad.name == "sector 56") x_corr_rel += 110E-3 - 82E-3;
 
 			double y_corr_N = 0., y_corr_F = 0.;
-			if (ad.name == "sector 45") y_corr_N += +70E-3, y_corr_F += -70E-3;
-			if (ad.name == "sector 56") y_corr_N += +50E-3, y_corr_F += -50E-3;
+			if (ad.name == "sector 45") y_corr_N += +70E-3 - 25E-3, y_corr_F += -70E-3 + 25E-3;
+			if (ad.name == "sector 56") y_corr_N += +50E-3 - 25E-3, y_corr_F += -50E-3 + 25E-3;
 
 			AlignmentResult ar_N(de_x_N + x_corr_rel/2., 150E-3, d_N.sxw_y / d_N.sw_y + y_corr_N, 150E-3);
 			AlignmentResult ar_F(de_x_F - x_corr_rel/2., 150E-3, d_F.sxw_y / d_F.sw_y + y_corr_F, 150E-3);
@@ -232,7 +232,7 @@ int main()
 	}
 
 	// save results
-	output.Write("collect_alignments_2019_12_04.out");
+	output.Write("collect_alignments_2020_04_29.out");
 
 	// clean up
 	return 0;
